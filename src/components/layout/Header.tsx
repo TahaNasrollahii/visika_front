@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Search, ShoppingCart, User, Menu, MapPin, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -39,9 +40,8 @@ export function Header() {
           {/* Right Section: Logo & Location */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2">
-              {/* Logo placeholder */}
-              <div className="bg-primary text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xl shadow-sm">
-                V
+              <div className="relative w-10 h-10 overflow-hidden rounded-xl shadow-sm">
+                <Image src="/logo.png" alt="Vzika Logo" fill className="object-cover" />
               </div>
               <span className="font-bold text-2xl tracking-tight hidden md:block text-primary">
                 وزیکا
@@ -107,15 +107,15 @@ export function Header() {
               دسته‌بندی کالاها
             </Button>
           </Link>
-          <Link href="/search" className="hover:text-primary transition-colors flex items-center gap-1">
+          <Link href="/offers" className="hover:text-primary transition-colors flex items-center gap-1">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive"></span>
             </span>
             تخفیف‌ها و پیشنهادها
           </Link>
-          <Link href="/search" className="hover:text-primary transition-colors">پرفروش‌ترین‌ها</Link>
-          <Link href="/search" className="hover:text-primary transition-colors">جدیدترین‌ها</Link>
+          <Link href="/best-selling" className="hover:text-primary transition-colors">پرفروش‌ترین‌ها</Link>
+          <Link href="/newest" className="hover:text-primary transition-colors">جدیدترین‌ها</Link>
           <Link href="/about" className="hover:text-primary transition-colors">سوالی دارید؟</Link>
         </div>
       </div>
