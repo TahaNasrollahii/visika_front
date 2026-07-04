@@ -36,45 +36,60 @@ export default function Home() {
 
       {/* Hot Offers Section */}
       <section className="container mx-auto px-4 lg:px-8">
-        <div className="bg-primary rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center md:items-stretch gap-8 overflow-hidden relative shadow-lg shadow-primary/20">
+        <div className="bg-gradient-to-br from-primary to-primary/80 rounded-[2rem] p-6 md:p-8 lg:p-10 flex flex-col lg:flex-row items-center lg:items-stretch gap-8 overflow-hidden relative shadow-2xl shadow-primary/20 border border-primary/10">
           
+          {/* Decorative background elements */}
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-black/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none"></div>
+
           {/* Intro Block (Right Side in RTL) */}
-          <div className="w-full md:w-56 shrink-0 flex flex-col items-center justify-center text-white text-center space-y-6 md:space-y-10 py-4">
-            <h2 className="text-3xl md:text-4xl font-extrabold leading-[1.4] md:leading-[1.5]">
-              تخفیف‌ها و<br/>پیشنهادها
-            </h2>
+          <div className="w-full lg:w-64 shrink-0 flex flex-col items-center justify-center text-white text-center space-y-6 lg:space-y-8 py-4 relative z-10">
+            <div className="space-y-3">
+              <span className="inline-block py-1.5 px-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs md:text-sm font-bold tracking-wider shadow-sm">
+                پیشنهاد ویژه
+              </span>
+              <h2 className="text-4xl md:text-5xl font-black leading-tight drop-shadow-md">
+                شگفت‌انگیز
+              </h2>
+              <p className="text-white/90 font-medium text-base md:text-lg">
+                تخفیف‌های بی‌نظیر امروز
+              </p>
+            </div>
             
-            {/* Percent Icon Mock */}
-            <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border-2 border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-              <span className="text-6xl font-black italic drop-shadow-md">%</span>
+            {/* Animated percentage badge */}
+            <div className="relative group cursor-pointer my-4 lg:my-8">
+              <div className="absolute inset-0 bg-white/30 blur-xl rounded-full scale-110 group-hover:scale-150 transition-transform duration-500"></div>
+              <div className="relative w-24 h-24 md:w-32 md:h-32 bg-gradient-to-tr from-yellow-400 to-yellow-200 rounded-full flex items-center justify-center shadow-xl border-4 border-white/40 transform group-hover:-translate-y-2 group-hover:rotate-12 transition-all duration-300">
+                <span className="text-5xl md:text-6xl font-black text-primary drop-shadow-sm">%</span>
+              </div>
             </div>
 
-            {/* Navigation Arrows */}
-            <div className="hidden md:flex items-center gap-3">
-               <button className="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center hover:bg-gray-100 transition-colors shadow-md">
-                 <ChevronRight className="w-6 h-6" />
-               </button>
-               <button className="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center hover:bg-gray-100 transition-colors shadow-md">
-                 <ChevronLeft className="w-6 h-6" />
-               </button>
-            </div>
+            <Link href="/offers" className="hidden lg:flex items-center gap-2 text-white hover:text-yellow-200 font-bold text-lg group transition-colors mt-2">
+              مشاهده همه
+              <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1.5 transition-transform" />
+            </Link>
           </div>
 
           {/* Cards Carousel */}
-          <div className="flex-1 w-full overflow-x-auto flex gap-4 pb-4 md:pb-0 custom-scrollbar snap-x items-center">
+          <div className="flex-1 w-full overflow-x-auto flex gap-4 md:gap-6 pb-6 pt-4 lg:py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] snap-x snap-mandatory items-stretch relative z-10 px-2">
             {hotOffers.map((product) => (
-              <div key={product.id} className="w-[200px] md:w-[240px] shrink-0 snap-center">
-                <ProductCard product={product} />
+              <div key={product.id} className="w-[220px] md:w-[250px] shrink-0 snap-center group/card">
+                <div className="h-full transform group-hover/card:-translate-y-2 transition-transform duration-300">
+                  <ProductCard product={product} />
+                </div>
               </div>
             ))}
             
             {/* View All Card */}
-            <div className="w-[180px] md:w-[200px] shrink-0 snap-center h-full min-h-[300px] md:min-h-[360px] flex items-center justify-center p-2">
-              <Link href="/offers" className="flex flex-col items-center justify-center w-full h-full bg-white/10 hover:bg-white/20 transition-colors rounded-2xl border-2 border-dashed border-white/40 text-white gap-4 group">
-                <div className="w-14 h-14 rounded-full bg-white text-primary flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
-                  <ChevronLeft className="w-7 h-7" />
+            <div className="w-[180px] md:w-[220px] shrink-0 snap-center flex items-stretch py-1">
+              <Link href="/offers" className="flex flex-col items-center justify-center w-full h-full bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all duration-300 rounded-3xl border border-white/20 hover:border-white/40 text-white gap-5 group shadow-lg min-h-[300px]">
+                <div className="w-16 h-16 rounded-full bg-white text-primary flex items-center justify-center group-hover:scale-110 group-hover:-translate-x-2 transition-all duration-300 shadow-xl">
+                  <ChevronLeft className="w-8 h-8" />
                 </div>
-                <span className="font-bold text-lg">مشاهده همه</span>
+                <div className="space-y-1 text-center">
+                  <span className="font-bold text-xl block">مشاهده همه</span>
+                  <span className="text-sm text-white/70">تخفیف‌ها و پیشنهادها</span>
+                </div>
               </Link>
             </div>
           </div>
