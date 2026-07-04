@@ -33,8 +33,6 @@ export default function CartPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">
-      <h1 className="text-3xl font-bold mb-8">سبد خرید شما</h1>
-      
       <div className="flex flex-col lg:flex-row gap-8">
         
         {/* Cart Items List */}
@@ -73,13 +71,13 @@ export default function CartPage() {
                   
                   <div className="flex items-center justify-between mt-2 md:mt-4">
                     {/* Quantity Selector */}
-                    <div className="flex items-center border rounded-lg md:rounded-xl overflow-hidden shadow-sm bg-background">
-                      <button onClick={() => updateQuantity(item.id, 1)} className="w-7 h-7 md:w-10 md:h-10 flex items-center justify-center hover:bg-secondary transition-colors text-primary">
-                        <Plus className="w-3 h-3 md:w-4 md:h-4" />
+                    <div className="flex items-center border rounded-xl overflow-hidden shadow-sm bg-background">
+                      <button onClick={() => updateQuantity(item.id, 1)} className="w-11 h-11 md:w-12 md:h-12 flex items-center justify-center hover:bg-secondary active:bg-secondary/80 transition-colors text-primary">
+                        <Plus className="w-5 h-5" />
                       </button>
-                      <span className="w-6 md:w-8 text-center font-bold text-xs md:text-base">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, -1)} className="w-7 h-7 md:w-10 md:h-10 flex items-center justify-center hover:bg-secondary transition-colors text-destructive">
-                        {item.quantity === 1 ? <Trash2 className="w-3 h-3 md:w-4 md:h-4" /> : <Minus className="w-3 h-3 md:w-4 md:h-4" />}
+                      <span className="w-8 md:w-10 text-center font-bold text-base md:text-lg">{item.quantity}</span>
+                      <button onClick={() => updateQuantity(item.id, -1)} className="w-11 h-11 md:w-12 md:h-12 flex items-center justify-center hover:bg-secondary active:bg-secondary/80 transition-colors text-destructive">
+                        {item.quantity === 1 ? <Trash2 className="w-5 h-5" /> : <Minus className="w-5 h-5" />}
                       </button>
                     </div>
 
