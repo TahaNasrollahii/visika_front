@@ -8,7 +8,7 @@ export function TrendingProducts({ products }: { products: any[] }) {
 
   return (
     <section className="container mx-auto px-4 lg:px-8">
-      <div className="relative rounded-[2.5rem] overflow-hidden p-4 md:p-6 lg:p-8 shadow-2xl shadow-[#F1B500]/20 bg-gradient-to-r from-[#F1B500] via-[#E23E57] to-[#F1B500] bg-[length:200%_auto] animate-[gradient-x_5s_linear_infinite]">
+      <div className="relative rounded-[2.5rem] overflow-hidden p-4 md:p-6 lg:p-8 pb-8 md:pb-10 lg:pb-14 shadow-2xl shadow-[#F1B500]/20 bg-gradient-to-r from-[#F1B500] via-[#E23E57] to-[#F1B500] bg-[length:200%_auto] animate-[gradient-x_5s_linear_infinite]">
         {/* Glow Effects */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/20 rounded-full blur-[100px] pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-black/10 rounded-full blur-[100px] pointer-events-none"></div>
