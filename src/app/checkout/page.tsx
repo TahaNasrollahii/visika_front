@@ -38,6 +38,7 @@ export default function CheckoutPage() {
   const [cartItemsTotal, setCartItemsTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [checkingOut, setCheckingOut] = useState(false)
+  const [defaultAddress, setDefaultAddress] = useState<any>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -47,6 +48,13 @@ export default function CheckoutPage() {
         const totalItemsPrice = items.reduce((acc: number, item: any) => acc + (item.product.price * item.quantity), 0)
         setCartItemsTotal(totalItemsPrice)
         setCartTotal(res.data.total_price)
+        return api.get('/users/addresses/')
+      })
+      .then(res => {
+        if (res && res.data) {
+          const defaultAddr = res.data.find((a: any) => a.is_default) || res.data[0]
+          setDefaultAddress(defaultAddr)
+        }
         setLoading(false)
       })
       .catch(() => {
@@ -116,25 +124,35 @@ export default function CheckoutPage() {
                   </div>
                   آدرس تحویل سفارش
                 </h2>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button variant="outline" size="sm" className="rounded-xl border-border/60 hover:bg-background shadow-sm flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-                    <Edit2 className="w-4 h-4" />
-                    ویرایش آدرس
-                  </Button>
-                </motion.div>
+                <Link href="/profile/addresses">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button variant="outline" size="sm" className="rounded-xl border-border/60 hover:bg-background shadow-sm flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+                      <Edit2 className="w-4 h-4" />
+                      ویرایش آدرس
+                    </Button>
+                  </motion.div>
+                </Link>
               </div>
               <div className="space-y-4">
-                <p className="font-bold text-lg text-foreground leading-relaxed">
-                  تهران، میدان ونک، خیابان ملاصدرا، پلاک ۱۲، واحد ۳
-                </p>
-                <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-muted-foreground">
-                  <span className="flex items-center gap-2 bg-background/50 px-3 py-1.5 rounded-lg border border-border/30">
-                    <ShieldCheck className="w-4 h-4 text-emerald-500"/> گیرنده: علی محمدی
-                  </span>
-                  <span className="flex items-center gap-2 bg-background/50 px-3 py-1.5 rounded-lg border border-border/30">
-                    شماره تماس: ۰۹۱۲۳۴۵۶۷۸۹
-                  </span>
-                </div>
+                {defaultAddress ? (
+                  <>
+                    <p className="font-bold text-lg text-foreground leading-relaxed">
+                      {defaultAddress.detail}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm font-medium text-muted-foreground">
+                      <span className="flex items-center gap-2 bg-background/50 px-3 py-1.5 rounded-lg border border-border/30">
+                        <ShieldCheck className="w-4 h-4 text-emerald-500"/> عنوان آدرس: {defaultAddress.title}
+                      </span>
+                      {defaultAddress.postal_code && (
+                        <span className="flex items-center gap-2 bg-background/50 px-3 py-1.5 rounded-lg border border-border/30">
+                          کد پستی: {defaultAddress.postal_code}
+                        </span>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-muted-foreground">هیچ آدرسی یافت نشد. لطفا از بخش ویرایش آدرس، یک آدرس ثبت کنید.</p>
+                )}
               </div>
             </div>
           </motion.div>
