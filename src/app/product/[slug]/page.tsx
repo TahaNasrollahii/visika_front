@@ -236,7 +236,23 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
                 className="pt-4"
               >
                 <Button 
-                  onClick={() => toast.success('محصول با موفقیت به سبد خرید اضافه شد')} 
+                  onClick={async () => {
+                    setAddingToCart(true)
+                    try {
+                      await api.post('/orders/cart/items/', { product_id: product.id, quantity: 1 })
+                      toast.success('محصول با موفقیت به سبد خرید اضافه شد')
+                      window.dispatchEvent(new Event('cart-updated'))
+                    } catch (err: any) {
+                      if (err.response?.status === 401 || err.response?.status === 403) {
+                        toast.error('ابتدا وارد حساب کاربری خود شوید')
+                      } else {
+                        toast.error('خطا در افزودن به سبد خرید')
+                      }
+                    } finally {
+                      setAddingToCart(false)
+                    }
+                  }} 
+                  disabled={addingToCart}
                   size="lg" 
                   className="w-full text-lg font-black rounded-[1.25rem] h-16 shadow-[0_15px_40px_-10px_rgba(var(--primary),0.6)] hover:shadow-[0_20px_50px_-10px_rgba(var(--primary),0.8)] transition-all bg-primary hover:bg-primary/90 text-primary-foreground relative overflow-hidden group border-b-4 border-primary/20 active:border-b-0 active:mt-1"
                 >
