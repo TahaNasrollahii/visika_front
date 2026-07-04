@@ -8,7 +8,7 @@ export function TrendingProducts({ products }: { products: any[] }) {
 
   return (
     <section className="container mx-auto px-4 lg:px-8">
-      <div className="relative rounded-[2.5rem] overflow-hidden p-4 md:p-6 lg:p-8 pb-8 md:pb-10 lg:pb-14 shadow-2xl shadow-[#F1B500]/20 bg-gradient-to-r from-[#F1B500] via-[#E23E57] to-[#F1B500] bg-[length:200%_auto] animate-[gradient-x_5s_linear_infinite]">
+      <div className="relative rounded-[2.5rem] overflow-hidden p-4 md:p-6 lg:p-8 pb-8 md:pb-10 lg:pb-14 shadow-2xl shadow-[#F1B500]/20 bg-gradient-to-r from-[#F1B500] via-[#E23E57] to-[#F1B500] bg-[length:200%_auto] animate-gradient-slow">
         {/* Glow Effects */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/20 rounded-full blur-[100px] pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-black/10 rounded-full blur-[100px] pointer-events-none"></div>
@@ -38,8 +38,8 @@ export function TrendingProducts({ products }: { products: any[] }) {
           {/* Products Grid */}
           <div className="w-full xl:w-2/3 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 pt-4 xl:pt-0">
             {displayProducts.map((product, idx) => (
-              <div 
-                key={product.id} 
+              <div
+                key={product.id}
                 className={`transform transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-white/10 ${idx % 2 === 1 ? 'xl:translate-y-6' : ''}`}
               >
                 <div className="bg-white rounded-3xl p-1 shadow-xl h-full relative overflow-hidden group">

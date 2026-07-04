@@ -4,7 +4,6 @@ import { ProductCard } from "@/components/shared/ProductCard"
 import { bestSellers, hotOffers, categories } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import { Hero } from "@/components/home/Hero"
-import { TrendingProducts } from "@/components/home/TrendingProducts"
 import { HotOffers } from "@/components/home/HotOffers"
 
 export default function Home() {
@@ -36,8 +35,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trending Section */}
-      <TrendingProducts products={bestSellers} />
+      {/* Hot Offers Section */}
+      <HotOffers hotOffers={hotOffers} />
 
       {/* Best Sellers Section */}
       <section className="container mx-auto px-4 lg:px-8">
@@ -58,21 +57,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Hot Offers Section */}
-      <HotOffers hotOffers={hotOffers} />
 
       {/* Banners Section */}
       <section className="container mx-auto px-4 lg:px-8">
         <div className="grid md:grid-cols-2 gap-4 md:gap-6">
           {/* Banner 1: Protein */}
-          <div className="group relative h-32 md:h-40 rounded-3xl overflow-hidden cursor-pointer bg-gradient-to-br from-rose-50 to-red-100 border border-red-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-between px-6 md:px-10">
+          <div className="group relative h-32 md:h-40 rounded-3xl overflow-hidden cursor-pointer bg-gradient-to-r from-orange-500 via-red-600 to-orange-500 bg-[length:200%_auto] animate-gradient-slow border border-red-400 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-between px-6 md:px-10">
             {/* Background Decorations */}
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-red-200/50 rounded-full blur-2xl group-hover:bg-red-300/50 transition-colors duration-500"></div>
-            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-rose-200/50 rounded-full blur-2xl group-hover:bg-rose-300/50 transition-colors duration-500"></div>
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:bg-white/30 transition-colors duration-500"></div>
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-yellow-400/20 rounded-full blur-2xl group-hover:bg-yellow-400/30 transition-colors duration-500"></div>
 
             <div className="space-y-1.5 md:space-y-2 z-10">
-              <h3 className="text-lg md:text-xl font-extrabold text-red-950">خرید محصولات <br className="hidden sm:block" /> پروتئینی تازه</h3>
-              <p className="text-xs md:text-sm font-medium text-red-800/80">با تضمین کیفیت و بهداشت</p>
+              <h3 className="text-lg md:text-xl font-extrabold text-white">خرید محصولات <br className="hidden sm:block" /> پروتئینی تازه</h3>
+              <p className="text-xs md:text-sm font-medium text-white/80">با تضمین کیفیت و بهداشت</p>
             </div>
 
             <div className="relative z-10">
@@ -82,14 +79,14 @@ export default function Home() {
           </div>
 
           {/* Banner 2: Summer Drinks */}
-          <div className="group relative h-32 md:h-40 rounded-3xl overflow-hidden cursor-pointer bg-gradient-to-br from-orange-50 to-amber-100 border border-amber-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-between px-6 md:px-10">
+          <div className="group relative h-32 md:h-40 rounded-3xl overflow-hidden cursor-pointer bg-gradient-to-r from-yellow-400 via-orange-500 to-yellow-400 bg-[length:200%_auto] animate-gradient-slow border border-orange-400 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-between px-6 md:px-10">
             {/* Background Decorations */}
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-200/50 rounded-full blur-2xl group-hover:bg-orange-300/50 transition-colors duration-500"></div>
-            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-amber-200/50 rounded-full blur-2xl group-hover:bg-amber-300/50 transition-colors duration-500"></div>
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:bg-white/30 transition-colors duration-500"></div>
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-yellow-200/20 rounded-full blur-2xl group-hover:bg-yellow-200/30 transition-colors duration-500"></div>
 
             <div className="space-y-1.5 md:space-y-2 z-10">
-              <h3 className="text-lg md:text-xl font-extrabold text-orange-950">نوشیدنی‌های <br className="hidden sm:block" /> خنک تابستانی</h3>
-              <p className="text-xs md:text-sm font-bold text-orange-600 bg-orange-100/50 w-fit px-2 py-0.5 rounded-md">تا ۲۰٪ تخفیف</p>
+              <h3 className="text-lg md:text-xl font-extrabold text-white">نوشیدنی‌های <br className="hidden sm:block" /> خنک تابستانی</h3>
+              <p className="text-xs md:text-sm font-bold text-white bg-white/20 w-fit px-2 py-0.5 rounded-md">تا ۲۰٪ تخفیف</p>
             </div>
 
             <div className="relative z-10">

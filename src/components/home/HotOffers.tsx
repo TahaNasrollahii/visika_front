@@ -131,9 +131,13 @@ export function HotOffers({ hotOffers }: { hotOffers: any[] }) {
         >
           {hotOffers.map((product) => (
             <div key={product.id} className="w-[160px] md:w-[190px] shrink-0 group/card pointer-events-none">
-              {/* Added pointer-events-none to children so dragging over cards works perfectly */}
-              <div className="h-full transform group-hover/card:-translate-y-2 transition-transform duration-300 pointer-events-auto">
-                <ProductCard product={product} />
+              <div className="h-full transform group-hover/card:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-white/10 pointer-events-auto">
+                <div className="bg-white rounded-3xl p-1 shadow-xl h-full relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="relative z-10 h-full">
+                    <ProductCard product={product} />
+                  </div>
+                </div>
               </div>
             </div>
           ))}
