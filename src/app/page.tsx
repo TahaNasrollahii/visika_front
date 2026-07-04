@@ -13,28 +13,6 @@ export default function Home() {
       {/* Hero Section */}
       <Hero />
 
-      {/* Best Sellers Section */}
-      <section className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight">پرفروش‌ترین کالاها</h2>
-          </div>
-          <Link href="/best-selling" className="text-primary font-medium flex items-center hover:bg-primary/10 px-3 py-1.5 rounded-lg transition-colors">
-            مشاهده همه
-            <ChevronLeft className="w-5 h-5" />
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {bestSellers.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
-
-      {/* Trending Section */}
-      <TrendingProducts products={bestSellers} />
-
       {/* Categories Grid */}
       <section className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between mb-6">
@@ -54,6 +32,28 @@ export default function Home() {
                 {cat.title}
               </span>
             </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Trending Section */}
+      <TrendingProducts products={bestSellers} />
+
+      {/* Best Sellers Section */}
+      <section className="container mx-auto px-4 lg:px-8">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-1.5 h-8 bg-primary rounded-full"></div>
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight">پرفروش‌ترین کالاها</h2>
+          </div>
+          <Link href="/best-selling" className="text-primary font-medium flex items-center hover:bg-primary/10 px-3 py-1.5 rounded-lg transition-colors">
+            مشاهده همه
+            <ChevronLeft className="w-5 h-5" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {bestSellers.map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>
