@@ -24,7 +24,7 @@ export function Hero() {
 
   return (
     <section className="container mx-auto px-4 lg:px-8 pt-6">
-      <div className="w-full min-h-[350px] md:h-[450px] lg:h-[500px] py-6 md:py-0 rounded-[2.5rem] bg-gradient-to-br from-primary via-blue-500 to-indigo-600 relative overflow-hidden flex items-center justify-center md:justify-start shadow-2xl shadow-primary/20">
+      <div className="w-full h-[360px] md:h-[450px] lg:h-[500px] rounded-[2.5rem] bg-gradient-to-br from-primary via-blue-500 to-indigo-600 relative overflow-hidden flex items-center justify-center md:justify-start shadow-2xl shadow-primary/20">
         
         {/* Animated Background Elements */}
         <motion.div 
@@ -66,22 +66,22 @@ export function Hero() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="relative z-10 px-6 md:px-16 w-full max-w-3xl text-white space-y-4 md:space-y-6 flex flex-col items-center md:items-start text-center md:text-right"
+          className="relative z-10 px-6 md:px-16 py-8 md:py-0 w-full h-full md:h-auto max-w-3xl text-white flex flex-col items-center md:items-start text-center md:text-right"
         >
-          <motion.div variants={itemVariants} className="inline-block mb-3 md:mb-6 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs md:text-sm font-medium">
+          <motion.div variants={itemVariants} className="inline-block mb-auto md:mb-6 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs md:text-sm font-medium">
             ✨ تجربه نسل جدید خرید آنلاین
           </motion.div>
           
-          <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-extrabold leading-tight md:leading-tight tracking-tight">
+          <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-extrabold leading-tight md:leading-tight tracking-tight mt-4 md:mt-0">
             خرید <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">تازه</span>، <br className="hidden sm:block" /> 
             تحویل سریع
           </motion.h1>
           
-          <motion.p variants={itemVariants} className="text-sm sm:text-base md:text-xl text-blue-50/90 max-w-lg leading-relaxed font-medium">
+          <motion.p variants={itemVariants} className="text-sm sm:text-base md:text-xl text-blue-50/90 max-w-lg leading-relaxed font-medium mt-3 md:mt-6">
             هر آنچه برای خانه نیاز دارید، با بهترین قیمت و بالاترین کیفیت، در کمتر از ۴۵ دقیقه درب منزل شماست.
           </motion.p>
           
-          <motion.div variants={itemVariants} className="pt-6 md:pt-10 flex flex-row gap-3 md:gap-4 w-full sm:w-auto justify-center md:justify-start">
+          <motion.div variants={itemVariants} className="mt-auto md:mt-10 flex flex-row gap-3 md:gap-4 w-full sm:w-auto justify-center md:justify-start">
             <Link href="/categories" className="flex-1 sm:flex-none">
               <Button size="lg" className="w-full bg-white text-primary hover:bg-gray-100 hover:scale-105 transition-transform duration-300 font-bold rounded-2xl px-2 md:px-8 h-12 md:h-14 text-sm md:text-lg shadow-xl shadow-white/10">
                 شروع خرید
