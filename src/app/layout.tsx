@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import { Vazirmatn } from "next/font/google";
+import "@fontsource/estedad/400.css";
+import "@fontsource/estedad/500.css";
+import "@fontsource/estedad/700.css";
+import "@fontsource/estedad/800.css";
+import "@fontsource/estedad/900.css";
 import "./globals.css";
-
-const vazirmatn = Vazirmatn({
-  variable: "--font-vazirmatn",
-  subsets: ["arabic", "latin"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Vizika | فروشگاه اینترنتی ویزیکا",
@@ -27,7 +25,7 @@ export default function RootLayout({
     <html
       lang="fa"
       dir="rtl"
-      className={`${vazirmatn.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground">
         <Toaster position="top-center" richColors dir="rtl" />

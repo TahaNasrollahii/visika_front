@@ -37,7 +37,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-vazirmatn);
+  --font-sans: "Estedad", sans-serif;
   
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -70,5 +70,11 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .container {
+    max-width: 1280px !important;
   }
 }
