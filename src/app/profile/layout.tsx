@@ -31,6 +31,17 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
     { title: "پیام‌ها و اعلان‌ها", href: "/profile/notifications", icon: Bell },
   ]
 
+  const handleLogout = async () => {
+    try {
+      await api.post('/users/logout/')
+      window.dispatchEvent(new Event("user-updated"))
+      window.dispatchEvent(new Event("cart-updated"))
+      window.location.href = '/login' // Force full navigation to clear state
+    } catch (err) {
+      console.error("Logout failed", err)
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">
       <div className="flex flex-col lg:flex-row gap-8">
@@ -70,7 +81,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                 )
               })}
               
-              <button className="flex items-center justify-between p-4 transition-colors hover:bg-destructive/5 text-destructive group">
+              <button onClick={handleLogout} className="flex items-center justify-between p-4 transition-colors hover:bg-destructive/5 text-destructive group">
                 <div className="flex items-center gap-3">
                   <LogOut className="w-5 h-5" />
                   <span className="font-medium text-sm">خروج از حساب</span>

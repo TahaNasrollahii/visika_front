@@ -39,6 +39,8 @@ export default function LoginPage() {
       try {
         await api.post('/users/otp/login/', { phone_number: phone, otp })
         toast.success("ورود موفقیت‌آمیز")
+        window.dispatchEvent(new Event("user-updated"))
+        window.dispatchEvent(new Event("cart-updated"))
         router.push('/profile')
       } catch (err: any) {
         if (err.response?.status === 404) {
@@ -47,6 +49,8 @@ export default function LoginPage() {
             await api.post('/users/signup/', { phone_number: phone, password: "temp_password_visika_123" })
             await api.post('/users/otp/login/', { phone_number: phone, otp })
             toast.success("ثبت‌نام و ورود موفقیت‌آمیز")
+            window.dispatchEvent(new Event("user-updated"))
+            window.dispatchEvent(new Event("cart-updated"))
             router.push('/profile')
           } catch (e) {
             toast.error("خطا در ثبت‌نام")

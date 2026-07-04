@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 import Link from "next/link"
-import { Search, ShoppingBag, User, Menu, LayoutGrid } from "lucide-react"
+import { Search, ShoppingBag, User, Menu, LayoutGrid, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
@@ -34,6 +34,20 @@ export function Header() {
       setCartCount(0)
       setUser(null)
       setIsLoggedIn(false)
+    }
+  }
+
+  const handleLogout = async () => {
+    try {
+      await api.post('/users/logout/')
+      setIsLoggedIn(false)
+      setUser(null)
+      setCartCount(0)
+      window.dispatchEvent(new Event("user-updated"))
+      window.dispatchEvent(new Event("cart-updated"))
+      router.push('/login')
+    } catch (err) {
+      console.error("Logout failed", err)
     }
   }
 
@@ -175,6 +189,11 @@ export function Header() {
                   <User className="w-[22px] h-[22px]" />
                 </Button>
               </Link>
+              {isLoggedIn && (
+                <Button variant="ghost" size="icon" onClick={handleLogout} className="text-destructive/80 hover:bg-destructive/10 hover:text-destructive rounded-full h-10 w-10">
+                  <LogOut className="w-[22px] h-[22px]" />
+                </Button>
+              )}
               {isLoggedIn ? (
                 <Link href="/cart" tabIndex={-1}>
                   <Button variant="ghost" size="icon" className="relative text-foreground/80 hover:bg-secondary/80 rounded-full h-10 w-10">
@@ -210,12 +229,18 @@ export function Header() {
           {/* Desktop Left Section: Actions (Hidden on Mobile) */}
           <div className="hidden md:flex items-center gap-2 md:gap-5 shrink-0">
             {isLoggedIn && (
-              <Link href="/profile" tabIndex={-1}>
-                <Button variant="ghost" className="gap-2 text-foreground/80 hover:text-foreground font-semibold text-sm px-3 hover:bg-secondary/80 h-11 rounded-xl">
-                  <User className="w-[22px] h-[22px]" />
-                  {user?.full_name?.trim() ? user.full_name : "حساب کاربری"}
+              <>
+                <Button variant="ghost" onClick={handleLogout} className="gap-2 text-destructive/80 hover:text-destructive font-semibold text-sm px-3 hover:bg-destructive/10 h-11 rounded-xl transition-colors">
+                  <LogOut className="w-[22px] h-[22px]" />
+                  خروج
                 </Button>
-              </Link>
+                <Link href="/profile" tabIndex={-1}>
+                  <Button variant="ghost" className="gap-2 text-foreground/80 hover:text-foreground font-semibold text-sm px-3 hover:bg-secondary/80 h-11 rounded-xl">
+                    <User className="w-[22px] h-[22px]" />
+                    {user?.full_name?.trim() ? user.full_name : "حساب کاربری"}
+                  </Button>
+                </Link>
+              </>
             )}
 
             {isLoggedIn ? (
