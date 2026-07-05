@@ -6,12 +6,15 @@ import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import Link from "next/link"
+import { Slider } from "@/components/ui/slider"
 
 // --- Helper Components for the Sidebar ---
 
 function Accordion({ title, isOpen, onToggle, children }: { title: string, isOpen: boolean, onToggle: () => void, children: React.ReactNode }) {
+  const [isAnimating, setIsAnimating] = useState(false)
+
   return (
-    <div className="border border-border/50 rounded-2xl overflow-hidden bg-background transition-shadow hover:shadow-sm">
+    <div className="border border-border/50 rounded-2xl bg-background transition-shadow hover:shadow-sm" style={{ overflow: isOpen && !isAnimating ? 'visible' : 'hidden' }}>
       <button 
         onClick={onToggle}
         className="w-full flex items-center justify-between p-4 bg-background text-right focus:outline-none"
@@ -28,9 +31,11 @@ function Accordion({ title, isOpen, onToggle, children }: { title: string, isOpe
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="overflow-hidden"
+            style={{ overflow: 'hidden' }}
+            onAnimationStart={() => setIsAnimating(true)}
+            onAnimationComplete={() => setIsAnimating(false)}
           >
-            <div className="p-4 pt-0 border-t border-border/50 bg-background/50">
+            <div className="p-4 pt-2 pb-4 border-t border-border/50 bg-background/50">
               {children}
             </div>
           </motion.div>
@@ -95,6 +100,12 @@ export function FiltersSidebar({ brands = [], categories = [], activeCategorySlu
   // Local state for inputs
   const [localMinPrice, setLocalMinPrice] = useState(minPrice)
   const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice)
+  const [minFocused, setMinFocused] = useState(false)
+  const [maxFocused, setMaxFocused] = useState(false)
+
+  // Convert Persian/Arabic numerals to ASCII digits before stripping
+  const toLatinDigits = (s: string) =>
+    s.replace(/[۰-۹٠-٩]/g, (d) => String(d.charCodeAt(0) - (d >= '\u0660' ? 1632 : 1776)))
 
   useEffect(() => {
     setLocalMinPrice(minPrice)
@@ -191,31 +202,58 @@ export function FiltersSidebar({ brands = [], categories = [], activeCategorySlu
 
         {/* Price Range Accordion */}
         <Accordion title="محدوده قیمت" isOpen={openSections.price} onToggle={() => toggleSection('price')}>
-          <div className="pt-4 flex flex-col gap-6">
+          <div className="pt-2 flex flex-col gap-6">
             
-            {/* Input fields */}
-            <div className="flex items-center gap-3">
-              <div className="flex-1 relative">
+            {/* Slider */}
+            <div className="px-3 py-3">
+              <Slider 
+                min={0} 
+                max={50000000} 
+                step={100000} 
+                value={[Number(localMinPrice) || 0, Number(localMaxPrice) || 50000000]} 
+                onValueChange={([min, max]) => {
+                  setLocalMinPrice(min.toString())
+                  setLocalMaxPrice(max.toString())
+                }}
+                onValueCommit={([min, max]) => {
+                  const params = new URLSearchParams(searchParams.toString())
+                  params.set('min_price', min.toString())
+                  params.set('max_price', max.toString())
+                  params.delete('page')
+                  router.push(`${pathname}?${params.toString()}`)
+                }}
+              />
+            </div>
+
+            {/* Input fields — 2 rows */}
+            <div className="flex flex-col gap-3">
+              {/* Min price */}
+              <div className="relative">
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">از</span>
-                <input 
-                  type="text" 
-                  value={Number(localMinPrice || 0).toLocaleString('fa-IR')}
-                  onChange={(e) => setLocalMinPrice(e.target.value.replace(/\D/g, ''))}
-                  onBlur={handlePriceApply}
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={minFocused ? localMinPrice : Number(localMinPrice || 0).toLocaleString('fa-IR')}
+                  onFocus={() => setMinFocused(true)}
+                  onChange={(e) => setLocalMinPrice(toLatinDigits(e.target.value).replace(/\D/g, ''))}
+                  onBlur={() => { setMinFocused(false); handlePriceApply() }}
                   onKeyDown={(e) => e.key === 'Enter' && handlePriceApply()}
-                  className="w-full bg-secondary/50 border-none rounded-xl h-10 pr-8 pl-12 text-sm font-bold text-center focus:ring-1 focus:ring-primary outline-none" 
+                  className="w-full bg-secondary/50 border-none rounded-xl h-10 pr-8 pl-16 text-sm font-bold text-right focus:ring-1 focus:ring-primary outline-none"
                 />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground font-medium">تومان</span>
               </div>
-              <div className="flex-1 relative">
+              {/* Max price */}
+              <div className="relative">
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">تا</span>
-                <input 
-                  type="text" 
-                  value={Number(localMaxPrice || 0).toLocaleString('fa-IR')}
-                  onChange={(e) => setLocalMaxPrice(e.target.value.replace(/\D/g, ''))}
-                  onBlur={handlePriceApply}
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={maxFocused ? localMaxPrice : Number(localMaxPrice || 0).toLocaleString('fa-IR')}
+                  onFocus={() => setMaxFocused(true)}
+                  onChange={(e) => setLocalMaxPrice(toLatinDigits(e.target.value).replace(/\D/g, ''))}
+                  onBlur={() => { setMaxFocused(false); handlePriceApply() }}
                   onKeyDown={(e) => e.key === 'Enter' && handlePriceApply()}
-                  className="w-full bg-secondary/50 border-none rounded-xl h-10 pr-8 pl-12 text-sm font-bold text-center focus:ring-1 focus:ring-primary outline-none" 
+                  className="w-full bg-secondary/50 border-none rounded-xl h-10 pr-8 pl-16 text-sm font-bold text-right focus:ring-1 focus:ring-primary outline-none"
                 />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground font-medium">تومان</span>
               </div>
