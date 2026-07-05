@@ -267,9 +267,11 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
               >
                 <Button 
                   onClick={async () => {
+                    // user === undefined means still loading auth — wait silently
+                    if (user === undefined) return
                     if (!user || user.status === 1) {
                       toast.error(
-                        !user 
+                        !user
                           ? 'ابتدا وارد حساب کاربری خود شوید'
                           : 'حساب کاربری شما باید ابتدا توسط مدیران بررسی و فعال شود'
                       )

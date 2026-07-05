@@ -87,54 +87,71 @@ export default function CartPage() {
           </div>
 
           <div className="bg-card border rounded-3xl shadow-sm overflow-hidden divide-y">
-            {cartItems.map((item) => (
-              <div key={item.id} className="p-3 md:p-6 flex flex-row gap-3 md:gap-6">
-                {/* Product Image */}
-                <div className="w-16 h-16 md:w-24 md:h-24 bg-white rounded-xl md:rounded-2xl flex items-center justify-center shrink-0 border relative overflow-hidden">
-                  <Image 
-                    src={item.product.image || '/placeholder.png'} 
-                    alt={item.product.title} 
-                    fill 
-                    className="object-contain p-1 md:p-2"
-                  />
+            {loading ? (
+              <div className="flex items-center justify-center py-16 text-muted-foreground">
+                <span className="animate-pulse text-sm">در حال بارگذاری...</span>
+              </div>
+            ) : cartItems.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
+                <ShoppingCart className="w-16 h-16 text-muted-foreground/30" />
+                <div>
+                  <p className="font-bold text-lg text-foreground">سبد خرید شما خالی است</p>
+                  <p className="text-sm text-muted-foreground mt-1">محصولات مورد نظر خود را به سبد اضافه کنید</p>
                 </div>
-                
-                <div className="flex-1 flex flex-col justify-between min-w-0">
-                  <div>
-                    <h3 className="font-bold text-sm md:text-lg mb-1 md:mb-2 leading-tight truncate">{item.product.title}</h3>
-                    <div className="flex items-center gap-2 md:gap-4 text-[11px] md:text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3 md:w-4 md:h-4"/> گارانتی اصالت</span>
-                      <span className="hidden sm:inline">ارسال امروز</span>
-                    </div>
+                <Link href="/categories" className="mt-2">
+                  <Button variant="outline" className="rounded-xl">مشاهده محصولات</Button>
+                </Link>
+              </div>
+            ) : (
+              cartItems.map((item) => (
+                <div key={item.id} className="p-3 md:p-6 flex flex-row gap-3 md:gap-6">
+                  {/* Product Image */}
+                  <div className="w-16 h-16 md:w-24 md:h-24 bg-white rounded-xl md:rounded-2xl flex items-center justify-center shrink-0 border relative overflow-hidden">
+                    <Image 
+                      src={item.product.image || '/placeholder.png'} 
+                      alt={item.product.title} 
+                      fill 
+                      className="object-contain p-1 md:p-2"
+                    />
                   </div>
                   
-                  <div className="flex items-center justify-between mt-2 md:mt-4">
-                    {/* Quantity Selector */}
-                    <div className="flex items-center border rounded-xl overflow-hidden shadow-sm bg-background">
-                      <button onClick={() => updateQuantity(item.id, 1)} className="w-11 h-11 md:w-12 md:h-12 flex items-center justify-center hover:bg-secondary active:bg-secondary/80 transition-colors text-primary">
-                        <Plus className="w-5 h-5" />
-                      </button>
-                      <span className="w-8 md:w-10 text-center font-bold text-base md:text-lg">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, -1)} className="w-11 h-11 md:w-12 md:h-12 flex items-center justify-center hover:bg-secondary active:bg-secondary/80 transition-colors text-destructive">
-                        {item.quantity === 1 ? <Trash2 className="w-5 h-5" /> : <Minus className="w-5 h-5" />}
-                      </button>
+                  <div className="flex-1 flex flex-col justify-between min-w-0">
+                    <div>
+                      <h3 className="font-bold text-sm md:text-lg mb-1 md:mb-2 leading-tight truncate">{item.product.title}</h3>
+                      <div className="flex items-center gap-2 md:gap-4 text-[11px] md:text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3 md:w-4 md:h-4"/> گارانتی اصالت</span>
+                        <span className="hidden sm:inline">ارسال امروز</span>
+                      </div>
                     </div>
+                    
+                    <div className="flex items-center justify-between mt-2 md:mt-4">
+                      {/* Quantity Selector */}
+                      <div className="flex items-center border rounded-xl overflow-hidden shadow-sm bg-background">
+                        <button onClick={() => updateQuantity(item.id, 1)} className="w-11 h-11 md:w-12 md:h-12 flex items-center justify-center hover:bg-secondary active:bg-secondary/80 transition-colors text-primary">
+                          <Plus className="w-5 h-5" />
+                        </button>
+                        <span className="w-8 md:w-10 text-center font-bold text-base md:text-lg">{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.id, -1)} className="w-11 h-11 md:w-12 md:h-12 flex items-center justify-center hover:bg-secondary active:bg-secondary/80 transition-colors text-destructive">
+                          {item.quantity === 1 ? <Trash2 className="w-5 h-5" /> : <Minus className="w-5 h-5" />}
+                        </button>
+                      </div>
 
-                    {/* Price */}
-                    <div className="text-left pl-1">
-                      {item.product.discountPrice && (
-                        <div className="text-[10px] md:text-sm text-muted-foreground line-through mb-0.5 md:mb-1">
-                          {item.product.price.toLocaleString("fa-IR")} تومان
+                      {/* Price */}
+                      <div className="text-left pl-1">
+                        {item.product.discountPrice && (
+                          <div className="text-[10px] md:text-sm text-muted-foreground line-through mb-0.5 md:mb-1">
+                            {item.product.price.toLocaleString("fa-IR")} تومان
+                          </div>
+                        )}
+                        <div className="text-sm md:text-xl font-bold">
+                          {(item.product.discountPrice || item.product.price).toLocaleString("fa-IR")} <span className="text-[10px] md:text-sm font-normal text-muted-foreground">تومان</span>
                         </div>
-                      )}
-                      <div className="text-sm md:text-xl font-bold">
-                        {(item.product.discountPrice || item.product.price).toLocaleString("fa-IR")} <span className="text-[10px] md:text-sm font-normal text-muted-foreground">تومان</span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
@@ -162,12 +179,18 @@ export default function CartPage() {
               </div>
             </div>
 
-            <Link href="/checkout">
-              <Button size="lg" className="w-full text-base font-bold rounded-xl h-14 shadow-md gap-2">
-                تایید و تکمیل سفارش
-                <ChevronLeft className="w-5 h-5" />
-              </Button>
-            </Link>
+            {cartItems.length === 0 ? (
+              <div className="py-4 text-center">
+                <p className="text-sm text-muted-foreground">سبد خرید شما خالی است</p>
+              </div>
+            ) : (
+              <Link href="/checkout">
+                <Button size="lg" className="w-full text-base font-bold rounded-xl h-14 shadow-md gap-2">
+                  تایید و تکمیل سفارش
+                  <ChevronLeft className="w-5 h-5" />
+                </Button>
+              </Link>
+            )}
             
             <p className="text-xs text-muted-foreground text-center mt-4 leading-relaxed">
               هزینه ارسال در مرحله بعد بر اساس آدرس شما محاسبه می‌شود.

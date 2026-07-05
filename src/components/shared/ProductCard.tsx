@@ -66,9 +66,11 @@ export function ProductCard({ product }: ProductCardProps) {
   const addToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    // user === undefined means auth is still loading — don't block yet
+    if (user === undefined) return
     if (!user || user.status === 1) {
       toast.error(
-        !user 
+        !user
           ? 'ابتدا وارد حساب کاربری خود شوید'
           : 'حساب کاربری شما باید ابتدا توسط مدیران بررسی و فعال شود'
       )
@@ -133,7 +135,7 @@ export function ProductCard({ product }: ProductCardProps) {
         
         <div className="flex items-end justify-between mt-2">
           <div className="flex flex-col">
-            {authLoading ? (
+            {authLoading || user === undefined ? (
               <span className="text-xs font-bold text-muted-foreground bg-secondary/50 px-2 py-1 rounded-lg animate-pulse">
                 در حال بارگذاری...
               </span>

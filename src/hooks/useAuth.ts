@@ -1,53 +1,83 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import api from "@/lib/api"
 
-let cachedUser: any = null
-let userPromise: Promise<any> | null = null
+// Module-level cache to avoid redundant fetches across component instances
+let cachedUser: any = undefined // undefined = not fetched yet, null = logged out, object = user
+let isFetching = false
+let fetchCallbacks: Array<(user: any) => void> = []
+
+function fetchUserOnce(onDone: (user: any) => void) {
+  if (cachedUser !== undefined) {
+    // Already have a result (even null) — return immediately
+    onDone(cachedUser)
+    return
+  }
+  fetchCallbacks.push(onDone)
+  if (isFetching) return // already in-flight
+
+  isFetching = true
+  api.get('/users/info')
+    .then(res => {
+      cachedUser = res.data
+    })
+    .catch(() => {
+      cachedUser = null // explicitly null = logged out / no session
+    })
+    .finally(() => {
+      isFetching = false
+      const cbs = fetchCallbacks
+      fetchCallbacks = []
+      cbs.forEach(cb => cb(cachedUser))
+    })
+}
+
+function resetCache() {
+  cachedUser = undefined
+  isFetching = false
+  fetchCallbacks = []
+}
 
 if (typeof window !== 'undefined') {
-  window.addEventListener("user-updated", () => {
-    cachedUser = null
-    userPromise = null
-  })
+  // When user logs in / out, reset cache and notify all hook instances
+  window.addEventListener("user-updated", resetCache)
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<any>(cachedUser)
-  const [loading, setLoading] = useState(!cachedUser)
+  // Start loading if we don't have a result yet
+  const [user, setUser] = useState<any>(cachedUser === undefined ? undefined : cachedUser)
+  const [loading, setLoading] = useState(cachedUser === undefined)
 
-  const fetchUser = () => {
-    if (!userPromise) {
-      userPromise = api.get('/users/info').then(res => {
-        cachedUser = res.data
-        return res.data
-      }).catch(() => {
-        cachedUser = { error: true } // Mark as fetched but unauthorized
-        return null
-      })
-    }
-
-    userPromise.then((data) => {
-      setUser(data)
+  const refresh = useCallback(() => {
+    setLoading(true)
+    resetCache()
+    fetchUserOnce((u) => {
+      setUser(u)
       setLoading(false)
     })
-  }
+  }, [])
 
   useEffect(() => {
-    if (cachedUser) {
+    if (cachedUser !== undefined) {
+      // Cache already populated from a previous render
       setUser(cachedUser)
       setLoading(false)
       return
     }
-    fetchUser()
 
-    const handleUpdate = () => {
-      setLoading(true)
-      fetchUser()
-    }
+    fetchUserOnce((u) => {
+      setUser(u)
+      setLoading(false)
+    })
 
+    const handleUpdate = () => refresh()
     window.addEventListener("user-updated", handleUpdate)
     return () => window.removeEventListener("user-updated", handleUpdate)
-  }, [])
+  }, [refresh])
 
-  return { user: user?.error ? null : user, loading }
+  return {
+    // null = definitely logged out, undefined/loading = still checking
+    user: loading ? undefined : user,
+    loading,
+    refresh,
+  }
 }
