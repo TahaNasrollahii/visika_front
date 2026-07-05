@@ -8,19 +8,22 @@ import { HotOffers } from "@/components/home/HotOffers"
 async function getCategories() {
   const res = await fetch("http://127.0.0.1:8000/products/categories/", { cache: "no-store" })
   if (!res.ok) return []
-  return res.json()
+  const data = await res.json()
+  return Array.isArray(data) ? data : (data.results || [])
 }
 
 async function getBestSellers() {
   const res = await fetch("http://127.0.0.1:8000/products/products/?is_best_seller=true", { cache: "no-store" })
   if (!res.ok) return []
-  return res.json()
+  const data = await res.json()
+  return Array.isArray(data) ? data : (data.results || [])
 }
 
 async function getHotOffers() {
   const res = await fetch("http://127.0.0.1:8000/products/products/?is_hot_offer=true", { cache: "no-store" })
   if (!res.ok) return []
-  return res.json()
+  const data = await res.json()
+  return Array.isArray(data) ? data : (data.results || [])
 }
 
 export default async function Home() {
