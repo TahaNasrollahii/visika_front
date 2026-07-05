@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Next 16 blocks cross-origin dev requests by default; allow 127.0.0.1 so the
+  // dev server hydrates whether opened via localhost or 127.0.0.1.
+  allowedDevOrigins: ["127.0.0.1"],
   images: {
     remotePatterns: [
       {

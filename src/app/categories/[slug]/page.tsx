@@ -1,26 +1,35 @@
 import React from "react"
 import { notFound } from "next/navigation"
 import { Filter, SlidersHorizontal, SortDesc } from "lucide-react"
-import { categories, bestSellers, hotOffers } from "@/lib/data"
 import { ProductCard } from "@/components/shared/ProductCard"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { FiltersSidebar } from "@/components/category/FiltersSidebar"
 
-// Simple mock mapping to mix up products per category
-const getProductsForCategory = (slug: string) => {
-  return [...bestSellers, ...hotOffers].sort(() => Math.random() - 0.5)
+async function getCategory(slug: string) {
+  const res = await fetch("http://127.0.0.1:8000/products/categories/", { cache: "no-store" })
+  if (!res.ok) return null
+  const categories = await res.json()
+  return categories.find((c: any) => c.slug === slug) ?? null
+}
+
+async function getProductsForCategory(slug: string) {
+  const res = await fetch(
+    `http://127.0.0.1:8000/products/products/?category_slug=${encodeURIComponent(slug)}`,
+    { cache: "no-store" }
+  )
+  if (!res.ok) return []
+  return res.json()
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = await params;
-  const category = categories.find(c => c.id === resolvedParams.slug)
-  
+  const { slug } = await params
+  const category = await getCategory(slug)
+
   if (!category) {
     notFound()
   }
 
-  const products = getProductsForCategory(resolvedParams.slug)
+  const products = await getProductsForCategory(slug)
 
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">
@@ -32,10 +41,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </div>
           <div>
             <h1 className="text-3xl font-bold">{category.title}</h1>
-            <p className="text-muted-foreground mt-1">{products.length} کالا یافت شد</p>
+            <p className="text-muted-foreground mt-1">{products.length.toLocaleString("fa-IR")} کالا یافت شد</p>
           </div>
         </div>
-        
+
         {/* Desktop Sort Header */}
         <div className="hidden lg:flex items-center gap-6">
           <div className="flex items-center gap-2 text-foreground font-bold">
@@ -69,23 +78,18 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
         {/* Product Grid */}
         <main className="flex-1">
-          {/* Active Filters Badges */}
-          <div className="hidden lg:flex flex-wrap gap-2 mb-6">
-            <Badge variant="secondary" className="gap-1 pl-1">
-              کاله
-              <button className="w-4 h-4 rounded-full hover:bg-muted-foreground/20 flex items-center justify-center">×</button>
-            </Badge>
-            <Badge variant="secondary" className="gap-1 pl-1">
-              موجود در انبار
-              <button className="w-4 h-4 rounded-full hover:bg-muted-foreground/20 flex items-center justify-center">×</button>
-            </Badge>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {products.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <p className="text-lg font-bold text-foreground">محصولی در این دسته‌بندی یافت نشد</p>
+              <p className="text-sm text-muted-foreground mt-2">به‌زودی محصولات جدید اضافه می‌شوند</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+              {products.map((product: any) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
         </main>
       </div>
     </div>
