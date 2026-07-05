@@ -1,9 +1,15 @@
 import React from "react"
 import Link from "next/link"
-import { categories } from "@/lib/data"
 import { ChevronLeft } from "lucide-react"
 
-export default function CategoriesPage() {
+async function getCategories() {
+  const res = await fetch("http://127.0.0.1:8000/products/categories/", { cache: "no-store" })
+  if (!res.ok) return []
+  return res.json()
+}
+
+export default async function CategoriesPage() {
+  const categories = await getCategories()
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">
       <h1 className="text-3xl font-bold mb-8">دسته‌بندی‌های ویزیکا</h1>

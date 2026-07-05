@@ -16,13 +16,15 @@ export function Header() {
   const [cartCount, setCartCount] = useState(0)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState<{full_name?: string} | null>(null)
+  const [categories, setCategories] = useState<any[]>([])
 
   const fetchData = async () => {
     try {
       // Run both requests in parallel
-      const [cartRes, userRes] = await Promise.all([
+      const [cartRes, userRes, catRes] = await Promise.all([
         api.get('/orders/cart/'),
-        api.get('/users/info/')
+        api.get('/users/info/'),
+        api.get('/products/categories/')
       ])
       
       const items = cartRes.data.items || []
@@ -30,6 +32,7 @@ export function Header() {
       setCartCount(totalQuantity)
       setUser(userRes.data)
       setIsLoggedIn(true)
+      setCategories(catRes.data || [])
     } catch {
       setCartCount(0)
       setUser(null)
@@ -124,48 +127,17 @@ export function Header() {
                 <div className="bg-background border rounded-3xl shadow-xl overflow-hidden p-6 flex flex-col gap-6">
 
                   {/* Categories Columns */}
-                  <div className="grid grid-cols-3 gap-8">
-                    {/* Column 1 */}
-                    <div className="flex flex-col gap-3">
-                      <Link href="/categories/fruits" className="font-bold text-foreground flex items-center gap-2 hover:text-primary transition-colors">
-                        <span className="text-xl">🍎</span>
-                        میوه‌جات
-                      </Link>
-                      <div className="flex flex-col gap-2.5 pr-7 text-[13px] text-muted-foreground">
-                        <Link href="#" className="hover:text-foreground transition-colors">سیب و گلابی</Link>
-                        <Link href="#" className="hover:text-foreground transition-colors">مرکبات</Link>
-                        <Link href="#" className="hover:text-foreground transition-colors">موز و آناناس</Link>
-                        <Link href="#" className="hover:text-foreground transition-colors">میوه‌های فصلی</Link>
+                  <div className="grid grid-cols-3 gap-6">
+                    {categories.slice(0, 9).map((cat) => (
+                      <div key={cat.id} className="flex flex-col gap-2 p-2 rounded-xl hover:bg-secondary/50 transition-colors">
+                        <Link href={`/categories/${cat.id}`} className="font-bold text-foreground flex items-center gap-3 hover:text-primary transition-colors">
+                          <span className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl shadow-sm ${cat.color}`}>
+                            {cat.icon}
+                          </span>
+                          {cat.title}
+                        </Link>
                       </div>
-                    </div>
-
-                    {/* Column 2 */}
-                    <div className="flex flex-col gap-3">
-                      <Link href="/categories/dairy" className="font-bold text-foreground flex items-center gap-2 hover:text-primary transition-colors">
-                        <span className="text-xl">🧀</span>
-                        لبنیات و پروتئین
-                      </Link>
-                      <div className="flex flex-col gap-2.5 pr-7 text-[13px] text-muted-foreground">
-                        <Link href="#" className="hover:text-foreground transition-colors">شیر و ماست</Link>
-                        <Link href="#" className="hover:text-foreground transition-colors">پنیر</Link>
-                        <Link href="#" className="hover:text-foreground transition-colors">تخم‌مرغ</Link>
-                        <Link href="#" className="hover:text-foreground transition-colors">مرغ و گوشت</Link>
-                      </div>
-                    </div>
-
-                    {/* Column 3 */}
-                    <div className="flex flex-col gap-3">
-                      <Link href="/categories/bakery" className="font-bold text-foreground flex items-center gap-2 hover:text-primary transition-colors">
-                        <span className="text-xl">🍞</span>
-                        نان و غلات
-                      </Link>
-                      <div className="flex flex-col gap-2.5 pr-7 text-[13px] text-muted-foreground">
-                        <Link href="#" className="hover:text-foreground transition-colors">نان تازه</Link>
-                        <Link href="#" className="hover:text-foreground transition-colors">برنج و حبوبات</Link>
-                        <Link href="#" className="hover:text-foreground transition-colors">ماکارونی</Link>
-                        <Link href="#" className="hover:text-foreground transition-colors">صبحانه</Link>
-                      </div>
-                    </div>
+                    ))}
                   </div>
 
                   {/* Promotional Banner */}
