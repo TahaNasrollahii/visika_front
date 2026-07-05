@@ -1,9 +1,11 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Filter, ChevronDown, ChevronUp, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
+import { useRouter, usePathname, useSearchParams } from "next/navigation"
+import Link from "next/link"
 
 // --- Helper Components for the Sidebar ---
 
@@ -68,35 +70,67 @@ function CustomToggle({ label, checked, onChange }: { label: string, checked: bo
 
 // --- Main Sidebar Component ---
 
-export function FiltersSidebar() {
+export function FiltersSidebar({ brands = [], categories = [], activeCategorySlug = "" }: { brands: string[], categories: any[], activeCategorySlug: string }) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
   const [openSections, setOpenSections] = useState({
     category: true,
-    seller: false,
-    price: false,
+    seller: true,
+    price: true,
   })
 
   const toggleSection = (section: keyof typeof openSections) => {
     setOpenSections(prev => ({ ...prev, [section]: !prev[section] }))
   }
 
-  // Mock State
-  const [activeCategory, setActiveCategory] = useState("لبنیات")
-  const [selectedSellers, setSelectedSellers] = useState<string[]>(["دلوسه", "اوامامی"])
-  const [onlyDiscounted, setOnlyDiscounted] = useState(false)
-  const [onlyInStock, setOnlyInStock] = useState(true)
+  // URL State
+  const activeBrands = searchParams.get('brands') ? searchParams.get('brands')!.split(',') : []
+  const onlyDiscounted = searchParams.get('has_discount') === 'true'
+  const onlyInStock = searchParams.get('in_stock') === 'true'
+  const minPrice = searchParams.get('min_price') || '0'
+  const maxPrice = searchParams.get('max_price') || '10000000'
 
-  const toggleSeller = (seller: string) => {
-    setSelectedSellers(prev => 
-      prev.includes(seller) ? prev.filter(s => s !== seller) : [...prev, seller]
-    )
+  // Local state for inputs
+  const [localMinPrice, setLocalMinPrice] = useState(minPrice)
+  const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice)
+
+  useEffect(() => {
+    setLocalMinPrice(minPrice)
+    setLocalMaxPrice(maxPrice)
+  }, [minPrice, maxPrice])
+
+  const updateQueryParams = (key: string, value: string | null) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value === null || value === '') {
+      params.delete(key)
+    } else {
+      params.set(key, value)
+    }
+    params.delete('page') // Reset page on filter change
+    router.push(`${pathname}?${params.toString()}`)
   }
 
-  const categories = [
-    "لبنیات", "تنقلات", "شیرینی", "چاشنی و افزودنی", 
-    "کنسرو و غذای آماده", "شوینده و ظروف یکبارمصرف", 
-    "میوه و سبزیجات", "پروتئین و تخم مرغ"
-  ]
-  const sellers = ["گلها", "دلوسه", "فامیل", "اوامامی", "پاکبان", "تازه بار", "باستی", "نان آوران", "گلستان"]
+  const toggleBrand = (brand: string) => {
+    const newBrands = activeBrands.includes(brand)
+      ? activeBrands.filter(b => b !== brand)
+      : [...activeBrands, brand]
+    
+    updateQueryParams('brands', newBrands.length > 0 ? newBrands.join(',') : null)
+  }
+
+  const handlePriceApply = () => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('min_price', localMinPrice.replace(/\D/g, ''))
+    params.set('max_price', localMaxPrice.replace(/\D/g, ''))
+    params.delete('page')
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
+  const clearAllFilters = () => {
+    router.push(pathname)
+  }
 
   return (
     <aside className="w-full lg:w-[300px] shrink-0 space-y-5 sticky top-28 z-10 hidden lg:block">
@@ -107,7 +141,7 @@ export function FiltersSidebar() {
           <Filter className="w-5 h-5 text-primary" strokeWidth={2.5} />
           فیلترها
         </h3>
-        <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/10 h-8 font-bold text-xs rounded-xl">
+        <Button onClick={clearAllFilters} variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/10 h-8 font-bold text-xs rounded-xl">
           حذف همه
         </Button>
       </div>
@@ -118,17 +152,17 @@ export function FiltersSidebar() {
         <Accordion title="دسته‌بندی‌ها" isOpen={openSections.category} onToggle={() => toggleSection('category')}>
           <div className="flex flex-col gap-1 pt-2">
             {categories.map((cat, idx) => (
-              <React.Fragment key={cat}>
-                <button 
-                  onClick={() => setActiveCategory(cat)}
+              <React.Fragment key={cat.slug}>
+                <Link 
+                  href={`/categories/${cat.slug}`}
                   className={`text-right py-2.5 text-sm transition-all flex items-center before:content-[''] before:w-1.5 before:h-1.5 before:rounded-full before:ml-2 ${
-                    activeCategory === cat 
+                    activeCategorySlug === cat.slug 
                       ? "font-extrabold text-primary before:bg-primary" 
                       : "font-medium text-muted-foreground hover:text-foreground before:bg-transparent"
                   }`}
                 >
-                  {cat}
-                </button>
+                  {cat.title}
+                </Link>
                 {idx !== categories.length - 1 && <div className="h-px bg-border/40 ml-4"></div>}
               </React.Fragment>
             ))}
@@ -136,20 +170,22 @@ export function FiltersSidebar() {
         </Accordion>
 
         {/* Seller Accordion */}
-        <Accordion title="فروشنده" isOpen={openSections.seller} onToggle={() => toggleSection('seller')}>
-          <div className="flex flex-col pt-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
-            {sellers.map((seller, idx) => (
-              <React.Fragment key={seller}>
-                <CustomCheckbox 
-                  label={seller} 
-                  checked={selectedSellers.includes(seller)}
-                  onChange={() => toggleSeller(seller)} 
-                />
-                {idx !== sellers.length - 1 && <div className="h-px bg-border/40 my-0.5"></div>}
-              </React.Fragment>
-            ))}
-          </div>
-        </Accordion>
+        {brands.length > 0 && (
+          <Accordion title="برند" isOpen={openSections.seller} onToggle={() => toggleSection('seller')}>
+            <div className="flex flex-col pt-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+              {brands.map((brand, idx) => (
+                <React.Fragment key={brand}>
+                  <CustomCheckbox 
+                    label={brand} 
+                    checked={activeBrands.includes(brand)}
+                    onChange={() => toggleBrand(brand)} 
+                  />
+                  {idx !== brands.length - 1 && <div className="h-px bg-border/40 my-0.5"></div>}
+                </React.Fragment>
+              ))}
+            </div>
+          </Accordion>
+        )}
 
         {/* Price Range Accordion */}
         <Accordion title="محدوده قیمت" isOpen={openSections.price} onToggle={() => toggleSection('price')}>
@@ -159,29 +195,27 @@ export function FiltersSidebar() {
             <div className="flex items-center gap-3">
               <div className="flex-1 relative">
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">از</span>
-                <input type="text" defaultValue="۰" className="w-full bg-secondary/50 border-none rounded-xl h-10 pr-8 pl-12 text-sm font-bold text-center focus:ring-1 focus:ring-primary outline-none" />
+                <input 
+                  type="text" 
+                  value={Number(localMinPrice || 0).toLocaleString('fa-IR')}
+                  onChange={(e) => setLocalMinPrice(e.target.value.replace(/\D/g, ''))}
+                  onBlur={handlePriceApply}
+                  onKeyDown={(e) => e.key === 'Enter' && handlePriceApply()}
+                  className="w-full bg-secondary/50 border-none rounded-xl h-10 pr-8 pl-12 text-sm font-bold text-center focus:ring-1 focus:ring-primary outline-none" 
+                />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground font-medium">تومان</span>
               </div>
               <div className="flex-1 relative">
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">تا</span>
-                <input type="text" defaultValue="۱۰,۰۰۰,۰۰۰" className="w-full bg-secondary/50 border-none rounded-xl h-10 pr-8 pl-12 text-sm font-bold text-center focus:ring-1 focus:ring-primary outline-none" />
+                <input 
+                  type="text" 
+                  value={Number(localMaxPrice || 0).toLocaleString('fa-IR')}
+                  onChange={(e) => setLocalMaxPrice(e.target.value.replace(/\D/g, ''))}
+                  onBlur={handlePriceApply}
+                  onKeyDown={(e) => e.key === 'Enter' && handlePriceApply()}
+                  className="w-full bg-secondary/50 border-none rounded-xl h-10 pr-8 pl-12 text-sm font-bold text-center focus:ring-1 focus:ring-primary outline-none" 
+                />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground font-medium">تومان</span>
-              </div>
-            </div>
-
-            {/* Visual Custom Slider */}
-            <div className="px-2 pb-2 mt-2">
-              <div className="h-1.5 w-full bg-secondary rounded-full relative">
-                {/* Active track */}
-                <div className="absolute top-0 bottom-0 left-[20%] right-[10%] bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary),0.4)]"></div>
-                {/* Left Thumb (Max Price) */}
-                <div className="absolute top-1/2 left-[20%] -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-white border-2 border-primary rounded-full shadow-md cursor-grab active:cursor-grabbing hover:scale-110 transition-transform"></div>
-                {/* Right Thumb (Min Price) */}
-                <div className="absolute top-1/2 right-[10%] -translate-y-1/2 translate-x-1/2 w-5 h-5 bg-white border-2 border-primary rounded-full shadow-md cursor-grab active:cursor-grabbing hover:scale-110 transition-transform"></div>
-              </div>
-              <div className="flex justify-between items-center mt-4 text-[11px] font-bold text-muted-foreground">
-                <span>از ۰ تومان</span>
-                <span>تا ۱۰,۰۰۰,۰۰۰ تومان</span>
               </div>
             </div>
 
@@ -193,12 +227,12 @@ export function FiltersSidebar() {
           <CustomToggle 
             label="فقط تخفیف دارها" 
             checked={onlyDiscounted} 
-            onChange={() => setOnlyDiscounted(!onlyDiscounted)} 
+            onChange={() => updateQueryParams('has_discount', onlyDiscounted ? null : 'true')} 
           />
           <CustomToggle 
             label="فقط کالاهای موجود" 
             checked={onlyInStock} 
-            onChange={() => setOnlyInStock(!onlyInStock)} 
+            onChange={() => updateQueryParams('in_stock', onlyInStock ? null : 'true')} 
           />
         </div>
 
