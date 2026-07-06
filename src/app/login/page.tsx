@@ -21,11 +21,23 @@ export default function LoginPage() {
     if (phone.length === 11) {
       setLoading(true)
       try {
-        await api.post('/users/otp/request', { phone_number: phone })
+        await api.post('/users/otp/request/', { phone_number: phone, action: 'login' })
         setStep(2)
         toast.success("کد تایید با موفقیت ارسال شد")
-      } catch (err) {
-        toast.error("خطا در ارسال کد تایید")
+      } catch (err: any) {
+        if (err.response?.status === 404) {
+          toast.error(
+            <div className="flex flex-col gap-2">
+                <span className="text-sm">کاربری با این شماره یافت نشد.</span>
+                <Link href="/register" className="text-primary text-sm font-bold mt-1 underline">
+                    ثبت نام در ویزیکا
+                </Link>
+            </div>,
+            { duration: 5000 }
+          )
+        } else {
+          toast.error("خطا در ارسال کد تایید")
+        }
       } finally {
         setLoading(false)
       }
@@ -37,7 +49,7 @@ export default function LoginPage() {
     if (otp.length === 4) {
       setLoading(true)
       try {
-        await api.post('/users/otp/login', { phone_number: phone, otp })
+        await api.post('/users/otp/login/', { phone_number: phone, otp })
         toast.success("ورود موفقیت‌آمیز")
         window.dispatchEvent(new Event("user-updated"))
         window.dispatchEvent(new Event("cart-updated"))

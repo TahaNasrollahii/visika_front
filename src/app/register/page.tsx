@@ -27,11 +27,15 @@ export default function RegisterPage() {
     if (phone.length === 11) {
       setLoading(true)
       try {
-        await api.post('/users/otp/request', { phone_number: phone })
+        await api.post('/users/otp/request/', { phone_number: phone, action: 'register' })
         setStep(2)
         toast.success("کد تایید با موفقیت ارسال شد")
-      } catch (err) {
-        toast.error("خطا در ارسال کد تایید")
+      } catch (err: any) {
+        if (err.response?.status === 400) {
+          toast.error("کاربری با این شماره از قبل وجود دارد.")
+        } else {
+          toast.error("خطا در ارسال کد تایید")
+        }
       } finally {
         setLoading(false)
       }
@@ -43,7 +47,7 @@ export default function RegisterPage() {
     if (otp.length === 4) {
       setLoading(true)
       try {
-        await api.post('/users/otp/register', { 
+        await api.post('/users/otp/register/', { 
           phone_number: phone, 
           otp,
           first_name: firstName,

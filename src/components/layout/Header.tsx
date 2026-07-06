@@ -48,7 +48,7 @@ export function Header() {
 
   const handleLogout = async () => {
     try {
-      await api.post('/users/logout')
+      await api.post('/users/logout/')
       setIsLoggedIn(false)
       setUser(null)
       setCartCount(0)

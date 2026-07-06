@@ -27,6 +27,12 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
+      // Match paths that already end with a slash
+      {
+        source: '/api/:path*/',
+        destination: 'http://127.0.0.1:8000/:path*/',
+      },
+      // Match paths without trailing slash and add one (Django requires it)
       {
         source: '/api/:path*',
         destination: 'http://127.0.0.1:8000/:path*/',
