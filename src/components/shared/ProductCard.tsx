@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import api from "@/lib/api"
 import { useAuth } from "@/hooks/useAuth"
+import { mediaUrl } from "@/lib/utils"
 
 export interface Product {
   id: string
@@ -119,7 +120,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link href={`/product/${product.id}`} className="relative aspect-square p-4 flex items-center justify-center bg-white">
         <div className="relative w-full h-full rounded-xl overflow-hidden">
           <Image 
-            src={product.image || '/placeholder.png'} 
+            src={mediaUrl(product.image)} 
             alt={product.title} 
             fill 
             className="object-contain hover:scale-105 transition-transform duration-300"

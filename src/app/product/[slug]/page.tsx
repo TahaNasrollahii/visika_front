@@ -8,6 +8,7 @@ import { motion } from "framer-motion"
 import { ShoppingCart, Heart, Share2, ShieldCheck, Truck, RotateCcw, Store, Star, ChevronLeft, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { mediaUrl } from "@/lib/utils"
 import { toast } from "sonner"
 import api from "@/lib/api"
 import { Product } from "@/components/shared/ProductCard"
@@ -99,7 +100,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
               transition={{ type: "spring", stiffness: 200, damping: 20 }}
             >
               <Image 
-                src={product.image} 
+                src={mediaUrl(product.image)} 
                 alt={product.title} 
                 fill 
                 className="object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.15)] mix-blend-multiply dark:mix-blend-normal"

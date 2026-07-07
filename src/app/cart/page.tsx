@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import api from "@/lib/api"
 import { useRouter } from "next/navigation"
+import { mediaUrl } from "@/lib/utils"
 
 interface CartItem {
   id: number
@@ -108,7 +109,7 @@ export default function CartPage() {
                   {/* Product Image */}
                   <div className="w-16 h-16 md:w-24 md:h-24 bg-white rounded-xl md:rounded-2xl flex items-center justify-center shrink-0 border relative overflow-hidden">
                     <Image 
-                      src={item.product.image || '/placeholder.png'} 
+                      src={mediaUrl(item.product.image)} 
                       alt={item.product.title} 
                       fill 
                       className="object-contain p-1 md:p-2"

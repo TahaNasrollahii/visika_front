@@ -101,5 +101,5 @@ visika_frontend/
 ---
 
 <div align="center">
-  <p>Developed with ❤️ by <strong>Ramin👑</strong></p>
+  <p>Developed with ❤️ by <strong>Taha👑</strong></p>
 </div>
