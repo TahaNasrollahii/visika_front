@@ -12,7 +12,7 @@ export function cn(...inputs: ClassValue[]) {
  * Next.js 16+ blocks image optimization requests to private IPs like 127.0.0.1.
  */
 export function mediaUrl(url: string | null | undefined): string {
-  if (!url) return '/placeholder.png'
+  if (!url) return 'https://placehold.co/600x400/eeeeee/999999.png?text=No+Image'
   // If it's already a relative path, return as-is
   if (url.startsWith('/')) return url
   try {
