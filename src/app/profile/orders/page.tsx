@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import React, { useEffect, useState } from "react"
 import { Package, ChevronLeft, Truck } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -76,9 +77,9 @@ export default function OrdersPage() {
                     {order.items?.map((item: any) => item.product_title).join("، ")}
                   </p>
                   
-                  <button className="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
+                  <Link href={`/profile/orders/${order.id}/invoice`} className="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
                     مشاهده فاکتور <ChevronLeft className="w-4 h-4" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             )
