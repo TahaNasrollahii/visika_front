@@ -29,7 +29,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground" suppressHydrationWarning>
-        <Toaster position="top-center" richColors dir="rtl" />
+        <Toaster position="top-center" richColors dir="rtl" toastOptions={{ style: { fontFamily: 'var(--font-sans)' } }} />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
