@@ -30,24 +30,32 @@ export default function SuccessPage() {
             پرداخت شما تایید شد. سفارش شما در حال آماده‌سازی است و در زمان مقرر ارسال خواهد شد.
           </p>
 
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3 w-full">
             {orderId && (
-              <Link href={`/profile/orders/${orderId}/invoice`}>
-                <Button size="lg" className="w-full text-base font-bold rounded-xl gap-2 shadow-sm mb-3">
+              <Link href={`/profile/orders/${orderId}/invoice`} className="w-full">
+                <Button size="lg" className="w-full text-base font-bold rounded-xl gap-2 shadow-sm">
                   <Package className="w-5 h-5" />
                   مشاهده فاکتور
                 </Button>
               </Link>
             )}
-            <Link href="/profile/orders">
-              <Button variant={orderId ? "outline" : "default"} size="lg" className="w-full text-base font-bold rounded-xl gap-2 shadow-sm">
-                <Package className="w-5 h-5" />
+            <Link href="/profile/orders" className="w-full">
+              <Button 
+                variant={orderId ? "secondary" : "default"} 
+                size="lg" 
+                className="w-full text-base font-semibold rounded-xl gap-2 shadow-sm border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-all hover:shadow-md"
+              >
+                <Package className="w-5 h-5 text-slate-500" />
                 پیگیری سفارش
               </Button>
             </Link>
-            <Link href="/">
-              <Button variant="outline" size="lg" className="w-full text-base font-bold rounded-xl gap-2">
-                <Home className="w-5 h-5" />
+            <Link href="/" className="w-full">
+              <Button 
+                variant="secondary" 
+                size="lg" 
+                className="w-full text-base font-semibold rounded-xl gap-2 shadow-sm border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-all hover:shadow-md"
+              >
+                <Home className="w-5 h-5 text-slate-500" />
                 بازگشت به خانه
               </Button>
             </Link>
