@@ -27,6 +27,26 @@ export default function VendorLayout({ children }: { children: React.ReactNode }
     return <div className="flex justify-center items-center h-screen font-bold text-muted-foreground">در حال بررسی دسترسی...</div>
   }
 
+  if (user.status === 1) {
+    return (
+      <div className="flex flex-col justify-center items-center h-[calc(100vh-200px)] gap-4 text-center">
+        <Store className="w-16 h-16 text-muted-foreground opacity-50" />
+        <h2 className="text-2xl font-black">حساب کاربری در انتظار تایید</h2>
+        <p className="text-muted-foreground max-w-md">
+          درخواست شما برای فعالیت به عنوان فروشنده با موفقیت ثبت شد. لطفا منتظر بمانید تا اطلاعات شما توسط مدیریت بررسی و تایید شود.
+        </p>
+        <Button onClick={() => {
+            localStorage.removeItem("access_token")
+            localStorage.removeItem("refresh_token")
+            window.dispatchEvent(new Event("user-updated"))
+            router.push("/")
+          }} variant="outline" className="mt-4">
+          خروج موقت
+        </Button>
+      </div>
+    )
+  }
+
   const handleLogout = async () => {
     try {
       await api.post("/users/logout/", { refresh: localStorage.getItem("refresh_token") })
