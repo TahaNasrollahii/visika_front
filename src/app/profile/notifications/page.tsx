@@ -1,8 +1,29 @@
-import React from "react"
+"use client"
+
+import React, { useEffect, useState } from "react"
 import { Bell, Tag, Package, Mail } from "lucide-react"
+import api from "@/lib/api"
+import { toast } from "sonner"
 
 export default function NotificationsPage() {
-  const notifications: any[] = []
+  const [notifications, setNotifications] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    api.get('/users/notifications/')
+      .then(res => {
+        setNotifications(res.data)
+        setLoading(false)
+      })
+      .catch(err => {
+        toast.error("خطا در دریافت اعلان‌ها")
+        setLoading(false)
+      })
+  }, [])
+
+  if (loading) {
+    return <div className="text-center py-20 text-muted-foreground font-bold">در حال بارگذاری...</div>
+  }
 
   return (
     <div>
@@ -16,21 +37,20 @@ export default function NotificationsPage() {
       {notifications.length > 0 ? (
         <div className="space-y-4">
           {notifications.map((notif) => {
-            const Icon = notif.icon
             return (
-              <div key={notif.id} className="flex gap-4 p-5 border rounded-2xl hover:border-primary/30 transition-colors bg-card">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${notif.color}`}>
-                  <Icon className="w-6 h-6" />
+              <div key={notif.id} className={`flex gap-4 p-5 border rounded-2xl transition-colors bg-card ${notif.is_read ? 'opacity-70' : 'border-primary/30 shadow-sm'}`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-blue-100 text-blue-600`}>
+                  <Mail className="w-6 h-6" />
                 </div>
                 <div>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                    <h3 className="font-bold">{notif.title}</h3>
-                    <span className="text-xs font-medium text-muted-foreground bg-secondary px-2 py-1 rounded-md w-fit">
-                      {notif.date}
+                    <h3 className="font-bold">پیام از: {notif.sender_name}</h3>
+                    <span className="text-xs font-medium text-muted-foreground bg-secondary px-2 py-1 rounded-md w-fit" dir="ltr">
+                      {new Date(notif.created_at).toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {notif.desc}
+                    {notif.message}
                   </p>
                 </div>
               </div>
