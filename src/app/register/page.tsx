@@ -15,6 +15,7 @@ export default function RegisterPage() {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [role, setRole] = useState("customer")
+  const [brandName, setBrandName] = useState("")
   const [otp, setOtp] = useState("")
   const [loading, setLoading] = useState(false)
   const [timeLeft, setTimeLeft] = useState(119)
@@ -77,7 +78,8 @@ export default function RegisterPage() {
           otp,
           first_name: firstName,
           last_name: lastName,
-          role: role
+          role: role,
+          brand_name: brandName
         })
         toast.success("ثبت‌نام با موفقیت انجام شد")
         window.dispatchEvent(new Event("user-updated"))
@@ -162,6 +164,22 @@ export default function RegisterPage() {
                 </label>
               </div>
             </div>
+
+            {role === "vendor" && (
+              <div className="space-y-2 text-right">
+                <label className="text-sm font-semibold">نام فروشگاه / برند</label>
+                <Input 
+                  type="text" 
+                  placeholder="مثال: فروشگاه کاله" 
+                  className="text-right h-14"
+                  value={brandName}
+                  onChange={(e) => setBrandName(e.target.value)}
+                  minLength={2}
+                  maxLength={100}
+                  required
+                />
+              </div>
+            )}
 
             <div className="space-y-2 text-right">
               <label className="text-sm font-semibold">شماره موبایل</label>

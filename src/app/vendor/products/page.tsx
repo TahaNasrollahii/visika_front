@@ -17,13 +17,11 @@ export default function VendorProductsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   
-  // Form State
   const [formData, setFormData] = useState({
     title: "",
     price: "",
     discount_price: "",
     description: "",
-    brand: "",
     stock: "0",
     category: ""
   })
@@ -56,7 +54,6 @@ export default function VendorProductsPage() {
     data.append("price", formData.price)
     if (formData.description) data.append("description", formData.description)
     if (formData.discount_price) data.append("discount_price", formData.discount_price)
-    if (formData.brand) data.append("brand", formData.brand)
     if (formData.stock) data.append("stock", formData.stock)
     if (formData.category) data.append("category", formData.category)
     if (image) data.append("image", image)
@@ -69,7 +66,7 @@ export default function VendorProductsPage() {
       setIsModalOpen(false)
       // Reset form
       setFormData({
-        title: "", price: "", discount_price: "", description: "", brand: "", stock: "0", category: ""
+        title: "", price: "", discount_price: "", description: "", stock: "0", category: ""
       })
       setImage(null)
       fetchProducts()
@@ -177,14 +174,6 @@ export default function VendorProductsPage() {
                     onChange={e => setFormData({...formData, discount_price: e.target.value})} 
                     placeholder="اختیاری"
                     dir="ltr"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold">برند</label>
-                  <Input 
-                    value={formData.brand} 
-                    onChange={e => setFormData({...formData, brand: e.target.value})} 
-                    placeholder="مثال: کاله"
                   />
                 </div>
                 <div className="space-y-2">
