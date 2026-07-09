@@ -50,8 +50,12 @@ export default async function Home() {
               href={`/categories/${cat.slug}`}
               className="group flex flex-col items-center gap-3 text-center"
             >
-              <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center text-3xl shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md ${cat.color}`}>
-                {cat.icon}
+              <div className={`relative w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center text-3xl shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md ${cat.color} overflow-hidden`}>
+                {cat.image ? (
+                  <img src={cat.image} alt={cat.title} className="w-full h-full object-cover" />
+                ) : (
+                  cat.icon
+                )}
               </div>
               <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                 {cat.title}
