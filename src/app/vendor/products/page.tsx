@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 import api from "@/lib/api"
 import { Package, Plus, X, Upload, Check, Edit, Trash2, Tag } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -226,8 +227,8 @@ export default function VendorProductsPage() {
       )}
 
       {/* Modal for adding/editing product */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+      {isModalOpen && typeof document !== 'undefined' ? createPortal(
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-white dark:bg-zinc-950 w-full max-w-3xl rounded-3xl shadow-2xl relative flex flex-col max-h-[90vh] overflow-hidden">
             
             {/* Modal Header */}
@@ -391,7 +392,7 @@ export default function VendorProductsPage() {
             
           </div>
         </div>
-      )}
+      , document.body) : null}
     </div>
   )
 }
