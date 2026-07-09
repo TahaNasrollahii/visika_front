@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 import Link from "next/link"
-import { Search, ShoppingBag, User, Menu, LayoutGrid, LogOut } from "lucide-react"
+import { Search, ShoppingBag, User, Menu, LayoutGrid, LogOut, Store } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
@@ -16,7 +16,7 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState("")
   const [cartCount, setCartCount] = useState(0)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState<{ full_name?: string } | null>(null)
+  const [user, setUser] = useState<{ full_name?: string; role?: string } | null>(null)
 
   // Categories are fetched independently of the user session so the menu works
   // whether or not the visitor is logged in, with its own loading/error states.
@@ -248,12 +248,21 @@ export function Header() {
                   <LogOut className="w-[22px] h-[22px]" />
                   خروج
                 </Button>
-                <Link href="/profile" tabIndex={-1}>
-                  <Button variant="ghost" className="gap-2 text-foreground/80 hover:text-foreground font-semibold text-sm px-3 hover:bg-secondary/80 h-11 rounded-xl">
-                    <User className="w-[22px] h-[22px]" />
-                    {user?.full_name?.trim() ? user.full_name : "حساب کاربری"}
-                  </Button>
-                </Link>
+                {user?.role === 'vendor' ? (
+                  <Link href="/vendor/products" tabIndex={-1}>
+                    <Button variant="ghost" className="gap-2 text-foreground/80 hover:text-foreground font-semibold text-sm px-3 hover:bg-secondary/80 h-11 rounded-xl">
+                      <Store className="w-[22px] h-[22px]" />
+                      پنل فروشنده
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/profile" tabIndex={-1}>
+                    <Button variant="ghost" className="gap-2 text-foreground/80 hover:text-foreground font-semibold text-sm px-3 hover:bg-secondary/80 h-11 rounded-xl">
+                      <User className="w-[22px] h-[22px]" />
+                      {user?.full_name?.trim() ? user.full_name : "حساب کاربری"}
+                    </Button>
+                  </Link>
+                )}
               </>
             )}
 

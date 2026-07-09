@@ -168,6 +168,176 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
                     <p className="text-base font-black text-foreground">فروشگاه ویزیکا</p>
                     <div className="flex items-center gap-1.5 mt-1 text-emerald-500">
                       <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+"use client"
+
+import React, { use, useEffect, useState } from "react"
+import { notFound } from "next/navigation"
+import Link from "next/link"
+import Image from "next/image"
+import { ShoppingCart, Heart, Share2, ShieldCheck, Truck, RotateCcw, Store, Star, ChevronLeft, CheckCircle2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { mediaUrl } from "@/lib/utils"
+import { toast } from "sonner"
+import api from "@/lib/api"
+import { Product } from "@/components/shared/ProductCard"
+import { useAuth } from "@/hooks/useAuth"
+
+export default function ProductDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = use(params);
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [addingToCart, setAddingToCart] = useState(false)
+  const { user, loading: authLoading } = useAuth()
+
+  useEffect(() => {
+    api.get(`/products/products/${resolvedParams.slug}/`)
+      .then(res => {
+        setProduct(res.data)
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }, [resolvedParams.slug])
+
+  if (loading) return <div>در حال بارگذاری...</div>
+  if (!product) return notFound()
+
+  const hasDiscount = product.discountPrice && product.discountPrice < product.price
+  const discountPercent = hasDiscount
+    ? Math.round(((product.price - product.discountPrice!) / product.price) * 100)
+    : 0
+
+  return (
+    <div className="container mx-auto px-4 py-8 lg:px-8 overflow-hidden min-h-[calc(100vh-200px)]">
+      
+      {/* Breadcrumbs - Animated */}
+      <nav 
+        className="flex items-center gap-2 text-sm text-muted-foreground mb-8 overflow-x-auto whitespace-nowrap pb-2 scrollbar-hide animate-in fade-in slide-in-from-top-4 duration-500"
+      >
+        <Link href="/" className="hover:text-primary transition-colors">خانه</Link>
+        <ChevronLeft className="w-4 h-4 opacity-50" />
+        <Link href="/categories" className="hover:text-primary transition-colors">سوپرمارکت</Link>
+        <ChevronLeft className="w-4 h-4 opacity-50" />
+        <Link href="/categories/dairy" className="hover:text-primary transition-colors">لبنیات</Link>
+        <ChevronLeft className="w-4 h-4 opacity-50" />
+        <span className="text-foreground font-medium bg-primary/10 px-2.5 py-1 rounded-lg text-primary">{product.title}</span>
+      </nav>
+
+      <div 
+        className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 animate-in fade-in duration-700"
+      >
+        
+        {/* Product Gallery */}
+        <div className="lg:col-span-4 animate-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-100">
+          <div className="relative aspect-square rounded-[2rem] flex items-center justify-center p-8 overflow-hidden group shadow-sm bg-gradient-to-tr from-secondary/50 via-background to-secondary/30 border border-border/60">
+            {/* Background Glow */}
+            <div className="absolute inset-0 bg-primary/5 rounded-full blur-[100px] transform scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            
+            <div 
+              className="relative w-full h-full z-10 flex items-center justify-center hover:scale-105 hover:-rotate-2 transition-transform duration-300"
+            >
+              <Image 
+                src={mediaUrl(product.image)} 
+                alt={product.title} 
+                fill 
+                className="object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.15)] mix-blend-multiply dark:mix-blend-normal"
+                priority
+              />
+            </div>
+            
+            {/* Gallery Actions - Floating */}
+            <div className="absolute top-6 left-6 flex flex-col gap-3 z-20">
+              <div className="hover:scale-110 active:scale-90 transition-transform">
+                <Button 
+                  onClick={async () => {
+                    const previousState = product.is_favorite
+                    setProduct({...product, is_favorite: !previousState})
+                    try {
+                      await api.post(`/users/favorites/${product.id}/toggle/`)
+                      if (previousState) toast.info('از لیست علاقه‌مندی‌ها حذف شد')
+                      else toast.success('به علاقه‌مندی‌ها اضافه شد')
+                      window.dispatchEvent(new Event('favorites-updated'))
+                    } catch (err: any) {
+                      setProduct({...product, is_favorite: previousState})
+                      if (err.response?.status === 401 || err.response?.status === 403) toast.error('ابتدا وارد حساب کاربری خود شوید')
+                      else toast.error('خطا در ارتباط با سرور')
+                    }
+                  }} 
+                  variant="outline" 
+                  size="icon" 
+                  className={`w-12 h-12 rounded-2xl bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md hover:bg-white dark:hover:bg-zinc-800 hover:text-destructive border-white/20 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 ${product.is_favorite ? 'text-destructive' : 'text-muted-foreground'}`}>
+                  <Heart className={`w-5 h-5 ${product.is_favorite ? 'fill-destructive' : ''}`} />
+                </Button>
+              </div>
+              <div className="hover:scale-110 active:scale-90 transition-transform">
+                <Button onClick={() => toast.success('لینک کپی شد')} variant="outline" size="icon" className="w-12 h-12 rounded-2xl bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md hover:bg-white dark:hover:bg-zinc-800 hover:text-primary border-white/20 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.08)] text-muted-foreground transition-all duration-300">
+                  <Share2 className="w-5 h-5" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Product Info - Redesigned Layout */}
+        <div className="lg:col-span-5 flex flex-col justify-center space-y-8 lg:px-4 animate-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-200">
+          <div className="space-y-5">
+            <div className="flex flex-wrap items-center gap-3">
+              <Badge variant="secondary" className="px-3 py-1.5 rounded-xl font-bold bg-primary/10 text-primary hover:bg-primary/20 border-none transition-colors">
+                برند: {product.brand || 'متفرقه'}
+              </Badge>
+            </div>
+            
+            <h1 className="text-3xl md:text-4xl font-black text-foreground leading-[1.3] tracking-tight text-right w-full">
+              {product.title}
+            </h1>
+            
+            <p className="text-muted-foreground leading-relaxed text-base md:text-lg text-right w-full">
+              این محصول با بهترین کیفیت و رعایت کامل اصول بهداشتی تهیه شده است. مناسب برای مصرف روزانه خانواده و سرشار از مواد مغذی که انرژی روزانه شما را تامین می‌کند.
+            </p>
+          </div>
+
+          {product.features && product.features.length > 0 && (
+            <div className="space-y-5 py-6 border-y border-border/50">
+              <h3 className="font-bold text-xl flex items-center gap-2 text-foreground text-right w-full">
+                <CheckCircle2 className="w-6 h-6 text-primary" />
+                ویژگی‌های برجسته
+              </h3>
+              <ul className="space-y-3">
+                {product.features.map((item) => (
+                  <li 
+                    key={item.id}
+                    className="flex items-center justify-between p-3.5 rounded-2xl bg-secondary/30 hover:bg-secondary/60 transition-colors border border-transparent hover:border-border/50 hover:-translate-x-1 transition-transform"
+                  >
+                    <span className="text-muted-foreground font-medium text-sm">{item.title}</span>
+                    <span className="font-bold text-foreground">{item.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+        </div>
+
+        {/* Buy Box - Glassmorphic floating card */}
+        <div className="lg:col-span-3 relative z-10 animate-in fade-in slide-in-from-right-8 duration-700 delay-300 fill-mode-both">
+          <div className="sticky top-28 w-full rounded-[2.5rem] p-6 lg:p-8 bg-white/70 dark:bg-zinc-950/70 backdrop-blur-2xl border border-white/40 dark:border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
+            
+            {/* Ambient background glow for the card */}
+            <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-b from-white/60 to-transparent dark:from-white/5 pointer-events-none" />
+
+            <div className="relative z-10 space-y-8">
+              {/* Vendor */}
+              <div className="flex items-center justify-between pb-6 border-b border-border/50">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <Store className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-base font-black text-foreground">فروشگاه ویزیکا</p>
+                    <div className="flex items-center gap-1.5 mt-1 text-emerald-500">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
                       <p className="text-xs font-bold">آماده ارسال سریع</p>
                     </div>
                   </div>
@@ -224,6 +394,10 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
                           ? 'ابتدا وارد حساب کاربری خود شوید'
                           : 'حساب کاربری شما باید ابتدا توسط مدیران بررسی و فعال شود'
                       )
+                      return
+                    }
+                    if (user.role === 'vendor') {
+                      toast.error('فروشندگان امکان ثبت سفارش ندارند')
                       return
                     }
                     setAddingToCart(true)

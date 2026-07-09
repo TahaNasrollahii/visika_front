@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState("")
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
+  const [role, setRole] = useState("customer")
   const [otp, setOtp] = useState("")
   const [loading, setLoading] = useState(false)
   const [timeLeft, setTimeLeft] = useState(119)
@@ -75,7 +76,8 @@ export default function RegisterPage() {
           phone_number: phone, 
           otp,
           first_name: firstName,
-          last_name: lastName
+          last_name: lastName,
+          role: role
         })
         toast.success("ثبت‌نام با موفقیت انجام شد")
         window.dispatchEvent(new Event("user-updated"))
@@ -139,6 +141,20 @@ export default function RegisterPage() {
                 </div>
             </div>
             
+            <div className="space-y-3 text-right">
+              <label className="text-sm font-semibold">نوع حساب کاربری</label>
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-2 cursor-pointer bg-secondary/50 p-3 rounded-xl border border-transparent hover:border-primary/20 flex-1">
+                  <input type="radio" name="role" value="customer" checked={role === "customer"} onChange={(e) => setRole(e.target.value)} className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium">مشتری (خریدار)</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer bg-secondary/50 p-3 rounded-xl border border-transparent hover:border-primary/20 flex-1">
+                  <input type="radio" name="role" value="vendor" checked={role === "vendor"} onChange={(e) => setRole(e.target.value)} className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium">فروشنده (تامین‌کننده)</span>
+                </label>
+              </div>
+            </div>
+
             <div className="space-y-2 text-right">
               <label className="text-sm font-semibold">شماره موبایل</label>
               <Input 

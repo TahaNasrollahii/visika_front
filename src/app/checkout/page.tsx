@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import api from "@/lib/api"
 import { toast } from "sonner"
+import { useAuth } from "@/hooks/useAuth"
 
 export default function CheckoutPage() {
+  const { user } = useAuth()
   const [selectedPayment, setSelectedPayment] = useState('online')
   const [cartTotal, setCartTotal] = useState(0)
   const [cartItemsTotal, setCartItemsTotal] = useState(0)
@@ -40,6 +42,12 @@ export default function CheckoutPage() {
   }, []);
 
   useEffect(() => {
+    if (user?.role === 'vendor') {
+      toast.error('فروشندگان امکان دسترسی به این صفحه را ندارند')
+      router.push('/')
+      return
+    }
+
     api.get('/orders/cart/')
       .then(res => {
         const items = res.data.items || []
