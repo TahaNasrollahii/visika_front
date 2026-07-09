@@ -125,7 +125,7 @@ export default function LoginPage() {
                 placeholder="۰۹۱۲۳۴۵۶۷۸۹" 
                 className="text-left text-lg tracking-widest h-14"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                 dir="ltr"
                 maxLength={11}
               />

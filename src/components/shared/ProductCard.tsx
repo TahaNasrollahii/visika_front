@@ -77,6 +77,10 @@ export function ProductCard({ product }: ProductCardProps) {
       )
       return
     }
+    if (user.role === 'vendor') {
+      toast.error('فروشندگان امکان ثبت سفارش ندارند')
+      return
+    }
     setAddingToCart(true)
     try {
       await api.post('/orders/cart/items/', { product_id: product.id, quantity: 1 })

@@ -131,6 +131,8 @@ export default function RegisterPage() {
                     className="text-right h-14"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
+                    minLength={2}
+                    maxLength={30}
                 />
                 </div>
                 <div className="space-y-2 text-right">
@@ -141,6 +143,8 @@ export default function RegisterPage() {
                     className="text-right h-14"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
+                    minLength={2}
+                    maxLength={30}
                 />
                 </div>
             </div>
@@ -166,7 +170,7 @@ export default function RegisterPage() {
                 placeholder="۰۹۱۲۳۴۵۶۷۸۹" 
                 className="text-left text-lg tracking-widest h-14"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                 dir="ltr"
                 maxLength={11}
               />
