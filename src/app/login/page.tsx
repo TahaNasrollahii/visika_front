@@ -40,30 +40,31 @@ export default function LoginPage() {
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault()
     if (phone.length === 11) {
-      setLoading(true)
-      try {
-        await api.post('/users/otp/request/', { phone_number: phone, action: 'login' })
-        setStep(2)
-        setTimeLeft(119)
-        setCanResend(false)
-        toast.success("کد تایید با موفقیت ارسال شد")
-      } catch (err: any) {
-        if (err.response?.status === 404) {
-          toast.error(
-            <div className="flex flex-col gap-2">
-                <span className="text-sm">کاربری با این شماره یافت نشد.</span>
-                <Link href="/register" className="text-primary text-sm font-bold mt-1 underline">
-                    ثبت نام در ویزیکا
-                </Link>
-            </div>,
-            { duration: 5000 }
-          )
-        } else {
-          toast.error("خطا در ارسال کد تایید")
-        }
-      } finally {
-        setLoading(false)
-      }
+      const currentStep = step
+      setStep(2)
+      setTimeLeft(119)
+      setCanResend(false)
+
+      api.post('/users/otp/request/', { phone_number: phone, action: 'login' })
+        .then(() => {
+          toast.success("کد تایید با موفقیت ارسال شد")
+        })
+        .catch((err: any) => {
+          setStep(currentStep)
+          if (err.response?.status === 404) {
+            toast.error(
+              <div className="flex flex-col gap-2">
+                  <span className="text-sm">کاربری با این شماره یافت نشد.</span>
+                  <Link href="/register" className="text-primary text-sm font-bold mt-1 underline">
+                      ثبت نام در ویزیکا
+                  </Link>
+              </div>,
+              { duration: 5000 }
+            )
+          } else {
+            toast.error("خطا در ارسال کد تایید")
+          }
+        })
     }
   }
 

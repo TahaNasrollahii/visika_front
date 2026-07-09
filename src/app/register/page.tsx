@@ -46,22 +46,23 @@ export default function RegisterPage() {
       return
     }
     if (phone.length === 11) {
-      setLoading(true)
-      try {
-        await api.post('/users/otp/request/', { phone_number: phone, action: 'register' })
-        setStep(2)
-        setTimeLeft(119)
-        setCanResend(false)
-        toast.success("کد تایید با موفقیت ارسال شد")
-      } catch (err: any) {
-        if (err.response?.status === 400) {
-          toast.error("کاربری با این شماره از قبل وجود دارد.")
-        } else {
-          toast.error("خطا در ارسال کد تایید")
-        }
-      } finally {
-        setLoading(false)
-      }
+      const currentStep = step
+      setStep(2)
+      setTimeLeft(119)
+      setCanResend(false)
+
+      api.post('/users/otp/request/', { phone_number: phone, action: 'register' })
+        .then(() => {
+          toast.success("کد تایید با موفقیت ارسال شد")
+        })
+        .catch((err: any) => {
+          setStep(currentStep)
+          if (err.response?.status === 400) {
+            toast.error("کاربری با این شماره از قبل وجود دارد.")
+          } else {
+            toast.error("خطا در ارسال کد تایید")
+          }
+        })
     }
   }
 
