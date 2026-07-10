@@ -124,7 +124,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
             </h1>
             
             <p className="text-muted-foreground leading-relaxed text-base md:text-lg text-right w-full">
-              این محصول با بهترین کیفیت و رعایت کامل اصول بهداشتی تهیه شده است. مناسب برای مصرف روزانه خانواده و سرشار از مواد مغذی که انرژی روزانه شما را تامین می‌کند.
+              {product.description || 'این محصول با بهترین کیفیت و رعایت کامل اصول بهداشتی تهیه شده است. مناسب برای مصرف روزانه خانواده و سرشار از مواد مغذی که انرژی روزانه شما را تامین می‌کند.'}
             </p>
           </div>
 

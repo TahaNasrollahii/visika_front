@@ -14,6 +14,7 @@ import { mediaUrl } from "@/lib/utils"
 export interface Product {
   id: string
   title: string
+  description?: string
   price: number
   discountPrice?: number
   image: string
