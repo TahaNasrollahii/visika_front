@@ -14,6 +14,10 @@ export default function NotificationsPage() {
       .then(res => {
         setNotifications(res.data)
         setLoading(false)
+        // Mark all notifications as read
+        api.post('/users/notifications/mark-read/').then(() => {
+          window.dispatchEvent(new Event("notification-updated"))
+        }).catch(() => {})
       })
       .catch(err => {
         toast.error("خطا در دریافت اعلان‌ها")

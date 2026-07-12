@@ -11,6 +11,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   const pathname = usePathname()
   const [user, setUser] = useState<{full_name?: string, phone_number?: string, avatar?: string} | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   const fetchUser = () => {
@@ -19,10 +20,21 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
       .catch(() => {})
   }
 
+  const fetchUnreadCount = () => {
+    api.get('/users/notifications/unread-count/')
+      .then(res => setUnreadCount(res.data.unread_count))
+      .catch(() => {})
+  }
+
   useEffect(() => {
     fetchUser()
+    fetchUnreadCount()
     window.addEventListener("user-updated", fetchUser)
-    return () => window.removeEventListener("user-updated", fetchUser)
+    window.addEventListener("notification-updated", fetchUnreadCount)
+    return () => {
+      window.removeEventListener("user-updated", fetchUser)
+      window.removeEventListener("notification-updated", fetchUnreadCount)
+    }
   }, [])
 
   const sidebarLinks = [
@@ -125,6 +137,11 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                     <div className="flex items-center gap-3">
                       <Icon className={cn("w-5 h-5", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
                       <span className="font-medium text-sm">{link.title}</span>
+                      {link.href === "/profile/notifications" && unreadCount > 0 && (
+                        <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold text-white bg-red-500 rounded-full">
+                          {unreadCount > 99 ? "99+" : unreadCount}
+                        </span>
+                      )}
                     </div>
                     <ChevronLeft className={cn("w-4 h-4", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
                   </Link>
