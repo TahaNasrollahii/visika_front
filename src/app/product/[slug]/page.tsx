@@ -4,7 +4,7 @@ import React, { use, useEffect, useState } from "react"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { ShoppingCart, Heart, Share2, ShieldCheck, Truck, RotateCcw, Store, Star, ChevronLeft, CheckCircle2 } from "lucide-react"
+import { ShoppingCart, Heart, Share2, ShieldCheck, Truck, RotateCcw, Store, Star, ChevronLeft, CheckCircle2, Plus, Minus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { mediaUrl } from "@/lib/utils"
@@ -18,6 +18,8 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [addingToCart, setAddingToCart] = useState(false)
+  const [cartItemId, setCartItemId] = useState<number | null>(null)
+  const [cartQuantity, setCartQuantity] = useState(0)
   const { user, loading: authLoading } = useAuth()
 
   useEffect(() => {
@@ -30,6 +32,33 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
         setLoading(false)
       })
   }, [resolvedParams.slug])
+
+  const checkCart = async () => {
+    try {
+      const res = await api.get('/orders/cart/')
+      const items = res.data.items || []
+      const found = items.find((item: any) => String(item.product.id) === String(product?.id))
+      if (found) {
+        setCartItemId(found.id)
+        setCartQuantity(found.quantity)
+      } else {
+        setCartItemId(null)
+        setCartQuantity(0)
+      }
+    } catch {
+      setCartItemId(null)
+      setCartQuantity(0)
+    }
+  }
+
+  useEffect(() => {
+    if (product) checkCart()
+  }, [product])
+
+  useEffect(() => {
+    window.addEventListener('cart-updated', checkCart)
+    return () => window.removeEventListener('cart-updated', checkCart)
+  }, [product])
 
   if (loading) return <div>در حال بارگذاری...</div>
   if (!product) return notFound()
@@ -211,51 +240,92 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
               </div>
 
               {/* Action Button */}
-              <div
-                className="pt-4 hover:scale-[1.03] hover:-translate-y-0.5 active:scale-95 transition-transform"
-              >
-                <Button 
-                  onClick={async () => {
-                    // user === undefined means still loading auth — wait silently
-                    if (user === undefined) return
-                    if (!user || user.status === 1) {
-                      toast.error(
-                        !user
-                          ? 'ابتدا وارد حساب کاربری خود شوید'
-                          : 'حساب کاربری شما باید ابتدا توسط مدیران بررسی و فعال شود'
-                      )
-                      return
-                    }
-                    if (user.role === 'vendor') {
-                      toast.error('فروشندگان امکان ثبت سفارش ندارند')
-                      return
-                    }
-                    setAddingToCart(true)
-                    try {
-                      await api.post('/orders/cart/items/', { product_id: product.id, quantity: 1 })
-                      toast.success('محصول با موفقیت به سبد خرید اضافه شد')
-                      window.dispatchEvent(new Event('cart-updated'))
-                    } catch (err: any) {
-                      if (err.response?.status === 401 || err.response?.status === 403) {
-                        toast.error('ابتدا وارد حساب کاربری خود شوید')
-                      } else {
-                        toast.error('خطا در افزودن به سبد خرید')
-                      }
-                    } finally {
-                      setAddingToCart(false)
-                    }
-                  }} 
-                  disabled={addingToCart}
-                  size="lg" 
-                  className="w-full text-lg font-black rounded-[1.25rem] h-16 shadow-[0_15px_40px_-10px_rgba(var(--primary),0.6)] hover:shadow-[0_20px_50px_-10px_rgba(var(--primary),0.8)] transition-all bg-primary hover:bg-primary/90 text-primary-foreground relative overflow-hidden group border-b-4 border-primary/20 active:border-b-0 active:mt-1"
-                >
-                  <span className="relative z-10 flex items-center justify-center gap-2">
-                    <ShoppingCart className="w-6 h-6" />
-                    افزودن به سبد خرید
-                  </span>
-                  {/* Subtle shine effect */}
-                  <div className="absolute inset-0 -translate-x-[150%] animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
-                </Button>
+              <div className="pt-4">
+                {cartItemId ? (
+                  <div className="flex items-center border rounded-xl overflow-hidden shadow-sm bg-background h-16">
+                    <button
+                      onClick={async () => {
+                        const newQuantity = cartQuantity + 1
+                        try {
+                          await api.patch(`/orders/cart/items/${cartItemId}/`, { quantity: newQuantity })
+                          setCartQuantity(newQuantity)
+                          window.dispatchEvent(new Event('cart-updated'))
+                        } catch {
+                          toast.error('خطا در بروزرسانی سبد خرید')
+                        }
+                      }}
+                      className="w-14 h-full flex items-center justify-center hover:bg-secondary active:bg-secondary/80 transition-colors text-primary"
+                    >
+                      <Plus className="w-6 h-6" />
+                    </button>
+                    <span className="flex-1 text-center font-bold text-xl">{cartQuantity}</span>
+                    <button
+                      onClick={async () => {
+                        try {
+                          if (cartQuantity === 1) {
+                            await api.delete(`/orders/cart/items/${cartItemId}/`)
+                            toast.success('کالا از سبد خرید حذف شد')
+                            setCartItemId(null)
+                            setCartQuantity(0)
+                          } else {
+                            const newQuantity = cartQuantity - 1
+                            await api.patch(`/orders/cart/items/${cartItemId}/`, { quantity: newQuantity })
+                            setCartQuantity(newQuantity)
+                          }
+                          window.dispatchEvent(new Event('cart-updated'))
+                        } catch {
+                          toast.error('خطا در بروزرسانی سبد خرید')
+                        }
+                      }}
+                      className="w-14 h-full flex items-center justify-center hover:bg-secondary active:bg-secondary/80 transition-colors text-destructive"
+                    >
+                      {cartQuantity === 1 ? <Trash2 className="w-6 h-6" /> : <Minus className="w-6 h-6" />}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="hover:scale-[1.03] hover:-translate-y-0.5 active:scale-95 transition-transform">
+                    <Button 
+                      onClick={async () => {
+                        if (user === undefined) return
+                        if (!user || user.status === 1) {
+                          toast.error(
+                            !user
+                              ? 'ابتدا وارد حساب کاربری خود شوید'
+                              : 'حساب کاربری شما باید ابتدا توسط مدیران بررسی و فعال شود'
+                          )
+                          return
+                        }
+                        if (user.role === 'vendor') {
+                          toast.error('فروشندگان امکان ثبت سفارش ندارند')
+                          return
+                        }
+                        setAddingToCart(true)
+                        try {
+                          await api.post('/orders/cart/items/', { product_id: product.id, quantity: 1 })
+                          toast.success('محصول با موفقیت به سبد خرید اضافه شد')
+                          window.dispatchEvent(new Event('cart-updated'))
+                        } catch (err: any) {
+                          if (err.response?.status === 401 || err.response?.status === 403) {
+                            toast.error('ابتدا وارد حساب کاربری خود شوید')
+                          } else {
+                            toast.error('خطا در افزودن به سبد خرید')
+                          }
+                        } finally {
+                          setAddingToCart(false)
+                        }
+                      }} 
+                      disabled={addingToCart}
+                      size="lg" 
+                      className="w-full text-lg font-black rounded-[1.25rem] h-16 shadow-[0_15px_40px_-10px_rgba(var(--primary),0.6)] hover:shadow-[0_20px_50px_-10px_rgba(var(--primary),0.8)] transition-all bg-primary hover:bg-primary/90 text-primary-foreground relative overflow-hidden group border-b-4 border-primary/20 active:border-b-0 active:mt-1"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        <ShoppingCart className="w-6 h-6" />
+                        افزودن به سبد خرید
+                      </span>
+                      <div className="absolute inset-0 -translate-x-[150%] animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
+                    </Button>
+                  </div>
+                )}
               </div>
 
               {/* Guarantees */}
