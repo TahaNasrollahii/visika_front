@@ -60,11 +60,11 @@ export default function VendorLayout({ children }: { children: React.ReactNode }
 
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8 overflow-hidden min-h-[calc(100vh-200px)]">
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-8 items-start">
         
         {/* Sidebar */}
         <aside className="w-full md:w-72 shrink-0">
-          <div className="sticky top-28 bg-white dark:bg-zinc-950 rounded-3xl p-6 border border-border shadow-sm flex flex-col gap-6 h-full">
+          <div className="sticky top-28 bg-white dark:bg-zinc-950 rounded-3xl p-6 border border-border shadow-sm flex flex-col gap-6">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-primary/10 text-primary rounded-full flex items-center justify-center">
                 <Store className="w-7 h-7" />
@@ -114,7 +114,7 @@ export default function VendorLayout({ children }: { children: React.ReactNode }
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0 self-stretch">
+        <main className="flex-1 min-w-0">
           {children}
         </main>
       </div>
