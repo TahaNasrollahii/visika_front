@@ -55,14 +55,15 @@ export function Header() {
   const handleLogout = async () => {
     try {
       await api.post('/users/logout/')
+    } catch (err) {
+      console.error("Logout failed", err)
+    } finally {
       setIsLoggedIn(false)
       setUser(null)
       setCartCount(0)
       window.dispatchEvent(new Event("user-updated"))
       window.dispatchEvent(new Event("cart-updated"))
       router.push('/login')
-    } catch (err) {
-      console.error("Logout failed", err)
     }
   }
 
