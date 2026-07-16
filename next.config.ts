@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "localhost",
       },
+      {
+        protocol: "https",
+        hostname: "visika-back.vercel.app",
+      },
     ],
     dangerouslyAllowSVG: true,
   },
