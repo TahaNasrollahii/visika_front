@@ -216,6 +216,8 @@ export default function RegisterPage() {
               <div className="flex gap-2 justify-center" dir="ltr">
                 <Input 
                   type="text" 
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   className="text-center text-2xl tracking-[1em] h-14 font-bold"
                   maxLength={4}
                   value={otp}

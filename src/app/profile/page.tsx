@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { User } from "lucide-react"
 import { toast } from "sonner"
 import api from "@/lib/api"
 import { useRouter } from "next/navigation"
@@ -56,7 +57,12 @@ export default function ProfileInfoPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">اطلاعات حساب کاربری</h1>
+      <div className="flex items-center gap-3 mb-8 pb-4 border-b">
+        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+          <User className="w-5 h-5 text-primary" />
+        </div>
+        <h1 className="text-2xl font-bold">اطلاعات حساب کاربری</h1>
+      </div>
       
       <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

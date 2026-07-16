@@ -45,7 +45,12 @@ export default function OrdersPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">سفارش‌های من</h1>
+      <div className="flex items-center gap-3 mb-8 pb-4 border-b">
+        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+          <Package className="w-5 h-5 text-primary" />
+        </div>
+        <h1 className="text-2xl font-bold">سفارش‌های من</h1>
+      </div>
       
       {orders.length > 0 ? (
         <div className="space-y-4">

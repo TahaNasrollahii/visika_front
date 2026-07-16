@@ -154,6 +154,8 @@ export default function LoginPage() {
                 {/* Mock OTP Input - real one uses multiple inputs or specialized library */}
                 <Input 
                   type="text" 
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   className="text-center text-2xl tracking-[1em] h-14 font-bold"
                   maxLength={4}
                   value={otp}
