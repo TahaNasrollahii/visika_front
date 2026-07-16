@@ -6,21 +6,23 @@ import { Button } from "@/components/ui/button"
 import { FiltersSidebar } from "@/components/category/FiltersSidebar"
 import Link from "next/link"
 
+const BACKEND_URL = process.env.BACKEND_URL || "http://127.0.0.1:8000"
+
 async function getCategory(slug: string) {
-  const res = await fetch("http://127.0.0.1:8000/products/categories/", { cache: "no-store" })
+  const res = await fetch(`${BACKEND_URL}/products/categories/`, { cache: "no-store" })
   if (!res.ok) return null
   const categories = await res.json()
   return categories.find((c: any) => c.slug === slug) ?? null
 }
 
 async function getBrands(categorySlug: string) {
-  const res = await fetch(`http://127.0.0.1:8000/products/brands/?category_slug=${encodeURIComponent(categorySlug)}`, { cache: "no-store" })
+  const res = await fetch(`${BACKEND_URL}/products/brands/?category_slug=${encodeURIComponent(categorySlug)}`, { cache: "no-store" })
   if (!res.ok) return []
   return res.json()
 }
 
 async function getProductsForCategory(slug: string, searchParams: any) {
-  const url = new URL("http://127.0.0.1:8000/products/products/")
+  const url = new URL(`${BACKEND_URL}/products/products/`)
   url.searchParams.append("category_slug", slug)
   
   // Add other filters from searchParams
@@ -55,7 +57,7 @@ export default async function CategoryPage({
 
   const brands = await getBrands(slug)
   
-  const categoriesRes = await fetch("http://127.0.0.1:8000/products/categories/", { cache: "no-store" })
+  const categoriesRes = await fetch(`${BACKEND_URL}/products/categories/`, { cache: "no-store" })
   const allCategories = categoriesRes.ok ? await categoriesRes.json() : []
 
   const productsData = await getProductsForCategory(slug, currentSearchParams)

@@ -2,9 +2,11 @@ import React from "react"
 import { Sparkles } from "lucide-react"
 import { ProductCard, Product } from "@/components/shared/ProductCard"
 
+const BACKEND_URL = process.env.BACKEND_URL || "http://127.0.0.1:8000"
+
 async function getNewestProducts() {
   try {
-    const res = await fetch("http://127.0.0.1:8000/products/products/", { cache: "no-store" })
+    const res = await fetch(`${BACKEND_URL}/products/products/`, { cache: "no-store" })
     if (!res.ok) return []
     const data = await res.json()
     const products: Product[] = Array.isArray(data) ? data : (data.results || [])

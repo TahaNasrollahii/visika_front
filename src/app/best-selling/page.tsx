@@ -2,9 +2,11 @@ import React from "react"
 import { Flame } from "lucide-react"
 import { ProductCard, Product } from "@/components/shared/ProductCard"
 
+const BACKEND_URL = process.env.BACKEND_URL || "http://127.0.0.1:8000"
+
 async function getBestSellers() {
   try {
-    const res = await fetch("http://127.0.0.1:8000/products/products/?is_best_seller=true", { cache: "no-store" })
+    const res = await fetch(`${BACKEND_URL}/products/products/?is_best_seller=true`, { cache: "no-store" })
     if (!res.ok) return []
     const data = await res.json()
     return Array.isArray(data) ? data : (data.results || [])

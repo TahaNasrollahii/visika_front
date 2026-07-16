@@ -5,22 +5,24 @@ import { Button } from "@/components/ui/button"
 import { Hero } from "@/components/home/Hero"
 import { HotOffers } from "@/components/home/HotOffers"
 
+const BACKEND_URL = process.env.BACKEND_URL || "http://127.0.0.1:8000"
+
 async function getCategories() {
-  const res = await fetch("http://127.0.0.1:8000/products/categories/", { cache: "no-store" })
+  const res = await fetch(`${BACKEND_URL}/products/categories/`, { cache: "no-store" })
   if (!res.ok) return []
   const data = await res.json()
   return Array.isArray(data) ? data : (data.results || [])
 }
 
 async function getBestSellers() {
-  const res = await fetch("http://127.0.0.1:8000/products/products/?is_best_seller=true", { cache: "no-store" })
+  const res = await fetch(`${BACKEND_URL}/products/products/?is_best_seller=true`, { cache: "no-store" })
   if (!res.ok) return []
   const data = await res.json()
   return Array.isArray(data) ? data : (data.results || [])
 }
 
 async function getHotOffers() {
-  const res = await fetch("http://127.0.0.1:8000/products/products/?is_hot_offer=true", { cache: "no-store" })
+  const res = await fetch(`${BACKEND_URL}/products/products/?is_hot_offer=true`, { cache: "no-store" })
   if (!res.ok) return []
   const data = await res.json()
   return Array.isArray(data) ? data : (data.results || [])

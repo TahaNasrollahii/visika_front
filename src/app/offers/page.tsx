@@ -2,9 +2,11 @@ import React from "react"
 import { Percent } from "lucide-react"
 import { ProductCard, Product } from "@/components/shared/ProductCard"
 
+const BACKEND_URL = process.env.BACKEND_URL || "http://127.0.0.1:8000"
+
 async function getHotOffers() {
   try {
-    const res = await fetch("http://127.0.0.1:8000/products/products/?is_hot_offer=true", { cache: "no-store" })
+    const res = await fetch(`${BACKEND_URL}/products/products/?is_hot_offer=true`, { cache: "no-store" })
     if (!res.ok) return []
     const data = await res.json()
     return Array.isArray(data) ? data : (data.results || [])
