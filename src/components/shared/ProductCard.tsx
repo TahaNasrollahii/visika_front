@@ -122,13 +122,13 @@ export function ProductCard({ product }: ProductCardProps) {
       </button>
 
       {/* Image */}
-      <Link href={`/product/${product.id}`} className="relative aspect-square p-4 flex items-center justify-center bg-white">
-        <div className="relative w-full h-full rounded-xl overflow-hidden">
+      <Link href={`/product/${product.id}`} className="relative block aspect-square w-full shrink-0 p-4 bg-secondary/20">
+        <div className="relative w-full h-full rounded-xl overflow-hidden flex items-center justify-center">
           <Image 
             src={mediaUrl(product.image)} 
             alt={product.title} 
             fill 
-            className="object-contain hover:scale-105 transition-transform duration-300"
+            className="object-contain mix-blend-multiply dark:mix-blend-normal hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
