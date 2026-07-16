@@ -7,7 +7,7 @@ const BACKEND_URL = process.env.BACKEND_URL || "http://127.0.0.1:8000"
 async function getCategories() {
   const res = await fetch(`${BACKEND_URL}/products/categories/`, { cache: "no-store" })
   if (!res.ok) return []
-  return res.json() as Promise<{ id: number; title: string; slug: string; icon: string; color: string }[]>
+  return res.json() as Promise<{ id: number; title: string; slug: string; icon: string; color: string; image?: string }[]>
 }
 
 export default async function CategoriesPage() {

@@ -11,7 +11,7 @@ async function getCategories() {
   const res = await fetch(`${BACKEND_URL}/products/categories/`, { cache: "no-store" })
   if (!res.ok) return []
   const data = await res.json()
-  return (Array.isArray(data) ? data : (data.results || [])) as { id: number; title: string; slug: string; icon: string; color: string }[]
+  return (Array.isArray(data) ? data : (data.results || [])) as { id: number; title: string; slug: string; icon: string; color: string; image?: string }[]
 }
 
 async function getBestSellers() {
