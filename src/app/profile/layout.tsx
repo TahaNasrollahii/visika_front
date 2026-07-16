@@ -159,7 +159,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1">
+        <main className="flex-1 w-full">
           <div className="bg-card border rounded-3xl p-6 md:p-8 shadow-sm min-h-[400px]">
             {children}
           </div>
