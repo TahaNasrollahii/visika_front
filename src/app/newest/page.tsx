@@ -4,7 +4,7 @@ import { ProductCard, Product } from "@/components/shared/ProductCard"
 
 async function getNewestProducts() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/products/products/`, { cache: "no-store" })
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://visika-back.vercel.app'}/products/products/`, { cache: "no-store" })
     if (!res.ok) return []
     const data = await res.json()
     const products: Product[] = Array.isArray(data) ? data : (data.results || [])

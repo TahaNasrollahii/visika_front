@@ -3,9 +3,14 @@ import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 
 async function getCategories() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/products/categories/`, { cache: "no-store" })
-  if (!res.ok) return []
-  return res.json()
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://visika-back.vercel.app'}/products/categories/`, { cache: "no-store" })
+    if (!res.ok) return []
+    const data = await res.json()
+    return Array.isArray(data) ? data : (data.results || [])
+  } catch (error) {
+    return []
+  }
 }
 
 export default async function CategoriesPage() {

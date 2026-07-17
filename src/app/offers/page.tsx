@@ -4,7 +4,7 @@ import { ProductCard, Product } from "@/components/shared/ProductCard"
 
 async function getHotOffers() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/products/products/?is_hot_offer=true`, { cache: "no-store" })
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://visika-back.vercel.app'}/products/products/?is_hot_offer=true`, { cache: "no-store" })
     if (!res.ok) return []
     const data = await res.json()
     return Array.isArray(data) ? data : (data.results || [])

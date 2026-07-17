@@ -6,24 +6,36 @@ import { Hero } from "@/components/home/Hero"
 import { HotOffers } from "@/components/home/HotOffers"
 
 async function getCategories() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/products/categories/`, { cache: "no-store" })
-  if (!res.ok) return []
-  const data = await res.json()
-  return Array.isArray(data) ? data : (data.results || [])
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://visika-back.vercel.app'}/products/categories/`, { cache: "no-store" })
+    if (!res.ok) return []
+    const data = await res.json()
+    return Array.isArray(data) ? data : (data.results || [])
+  } catch (error) {
+    return []
+  }
 }
 
 async function getBestSellers() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/products/products/?is_best_seller=true`, { cache: "no-store" })
-  if (!res.ok) return []
-  const data = await res.json()
-  return Array.isArray(data) ? data : (data.results || [])
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://visika-back.vercel.app'}/products/products/?is_best_seller=true`, { cache: "no-store" })
+    if (!res.ok) return []
+    const data = await res.json()
+    return Array.isArray(data) ? data : (data.results || [])
+  } catch (error) {
+    return []
+  }
 }
 
 async function getHotOffers() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/products/products/?is_hot_offer=true`, { cache: "no-store" })
-  if (!res.ok) return []
-  const data = await res.json()
-  return Array.isArray(data) ? data : (data.results || [])
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://visika-back.vercel.app'}/products/products/?is_hot_offer=true`, { cache: "no-store" })
+    if (!res.ok) return []
+    const data = await res.json()
+    return Array.isArray(data) ? data : (data.results || [])
+  } catch (error) {
+    return []
+  }
 }
 
 export default async function Home() {
