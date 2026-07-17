@@ -30,7 +30,11 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
   },
   async rewrites() {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+    const defaultApiUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://visika-back.vercel.app' 
+      : 'http://127.0.0.1:8000';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || defaultApiUrl;
+    
     return [
       // Match paths that already end with a slash
       {
