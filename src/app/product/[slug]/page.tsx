@@ -60,7 +60,17 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
     return () => window.removeEventListener('cart-updated', checkCart)
   }, [product])
 
-  if (loading) return <div>در حال بارگذاری...</div>
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-[9999] bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
+        <div className="relative flex items-center justify-center">
+          <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+          <Loader2 className="w-16 h-16 text-primary animate-spin relative z-10" />
+        </div>
+        <p className="text-foreground font-bold text-xl animate-pulse">در حال دریافت اطلاعات محصول...</p>
+      </div>
+    )
+  }
   if (!product) return notFound()
 
   const hasDiscount = product.discountPrice && product.discountPrice < product.price

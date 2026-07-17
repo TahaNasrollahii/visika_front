@@ -7,26 +7,29 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Converts backend media URLs to public URLs.
- * Bypasses the local proxy to ensure images load correctly on Vercel.
+ * Handles local vs production environments correctly.
  */
 export function mediaUrl(url: string | null | undefined): string {
   if (!url) return 'https://placehold.co/600x400/eeeeee/999999.png?text=No+Image'
   
-  const liveHost = 'https://visika-back.vercel.app'
+  // Use the env variable or fallback to localhost in dev, live host in prod
+  const isProd = process.env.NODE_ENV === 'production'
+  const defaultApiUrl = isProd ? 'https://visika-back.vercel.app' : 'http://127.0.0.1:8000'
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || defaultApiUrl
   
-  // If it's a relative path, prepend the live host
+  // If it's already a relative path, prepend the apiUrl
   if (url.startsWith('/')) {
-    return `${liveHost}${url}`
+    return `${apiUrl}${url}`
   }
 
-  // If the backend mistakenly returned a localhost URL, rewrite it
-  if (url.includes('127.0.0.1') || url.includes('localhost')) {
+  // If we are in production but the URL contains localhost, fix it
+  if (isProd && (url.includes('127.0.0.1') || url.includes('localhost'))) {
     try {
       const parsed = new URL(url)
-      return `${liveHost}${parsed.pathname}`
+      return `${apiUrl}${parsed.pathname}`
     } catch {}
   }
   
-  // Otherwise, it's a valid absolute URL (e.g., from the live backend)
+  // Otherwise, it's a valid absolute URL (local or prod)
   return url
 }
