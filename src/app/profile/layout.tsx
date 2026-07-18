@@ -75,9 +75,11 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
       setUser(res.data)
       window.dispatchEvent(new Event("user-updated"))
       toast.success("عکس پروفایل با موفقیت بروزرسانی شد")
-    } catch (err) {
+    } catch (err: any) {
       console.error("Avatar upload failed", err)
-      toast.error("خطا در بروزرسانی عکس پروفایل")
+      const errorDetails = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+      console.log("BACKEND ERROR DETAILS:", errorDetails)
+      toast.error(`خطا: ${errorDetails}`)
     } finally {
       setUploading(false)
     }
