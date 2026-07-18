@@ -7,6 +7,7 @@ export interface Category {
   slug: string
   icon?: string
   color?: string
+  image?: string
   // Present only if the backend ever exposes nested categories; the current
   // Django model is flat, so this is normally undefined.
   children?: Category[]

@@ -163,9 +163,15 @@ export function Header() {
                       {categories.map((cat) => (
                         <div key={cat.id} className="flex flex-col gap-2 p-2 rounded-xl hover:bg-secondary/50 transition-colors">
                           <Link href={`/categories/${cat.slug}`} className="font-bold text-foreground flex items-center gap-3 hover:text-primary transition-colors">
-                            <span className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl shadow-sm ${cat.color || "bg-secondary"}`}>
-                              {cat.icon}
-                            </span>
+                            <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 overflow-hidden bg-secondary shadow-sm">
+                              {cat.image ? (
+                                <img src={cat.image} alt={cat.title} className="w-full h-full object-cover" />
+                              ) : (
+                                <span className={`w-full h-full flex items-center justify-center text-xl ${cat.color || ""}`}>
+                                  {cat.icon}
+                                </span>
+                              )}
+                            </div>
                             {cat.title}
                           </Link>
 
