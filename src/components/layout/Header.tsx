@@ -135,7 +135,14 @@ export function Header() {
           {/* Mobile Top Row */}
           <div className="flex items-center justify-between w-full md:w-auto md:gap-6">
             {/* Right Section: Logo */}
-            <Link href="/" className="flex items-center gap-2 md:gap-3">
+            <Link 
+              href="/" 
+              className="flex items-center gap-2 md:gap-3"
+              onClick={() => {
+                setSearchQuery("")
+                setShowLiveResults(false)
+              }}
+            >
               <div className="w-10 h-10 md:w-[42px] md:h-[42px] bg-primary rounded-full flex items-center justify-center shadow-sm">
                 <ShoppingBag className="w-5 h-5 text-primary-foreground" />
               </div>
