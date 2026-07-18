@@ -52,14 +52,14 @@ export function Header() {
     }
   }
 
-  const handleLogout = () => {
-    // Fire server request in background — don't await it
-    api.post('/users/logout/').catch(() => {})
-    // Immediately clear local state and redirect
-    setIsLoggedIn(false)
-    setUser(null)
-    setCartCount(0)
-    router.push('/login')
+  const handleLogout = async () => {
+    try {
+      await api.post('/users/logout/')
+    } catch {
+      // Continue with logout even if server request fails
+    }
+    // Full page reload to ensure cookies are cleared
+    window.location.href = '/login'
   }
 
   // Add scroll event listener for sticky header styling (glassmorphism)

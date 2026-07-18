@@ -26,20 +26,75 @@ export default function CheckoutPage() {
   // Vendor specific delivery times
   const [brands, setBrands] = useState<string[]>([])
   const [selectedDeliveryTimes, setSelectedDeliveryTimes] = useState<Record<string, string>>({})
+  // Vendor-specific valid delivery dates computed from delivery rules
+  const [vendorDeliveryTimes, setVendorDeliveryTimes] = useState<Record<string, string[]>>({})
 
   const router = useRouter()
 
-  const deliveryTimes = React.useMemo(() => {
-    const times = [];
-    for (let i = 0; i < 7; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() + i);
-      const dateStr = new Intl.DateTimeFormat('fa-IR', { month: 'long', day: 'numeric' }).format(d);
-      const prefix = i === 0 ? 'امروز' : i === 1 ? 'فردا' : new Intl.DateTimeFormat('fa-IR', { weekday: 'long' }).format(d);
-      times.push(`${prefix} (${dateStr})`);
+  /**
+   * Map JS getDay() (0=Sun) to Persian weekday field names used by VendorDeliveryRule.
+   */
+  const JS_DAY_TO_FIELD: Record<number, string> = {
+    0: 'sunday',
+    1: 'monday',
+    2: 'tuesday',
+    3: 'wednesday',
+    4: 'thursday',
+    5: 'friday',
+    6: 'saturday',
+  }
+
+  /**
+   * Compute the valid delivery dates for a vendor based on their delivery rules.
+   */
+  const computeDeliveryDates = (rule: {
+    preparation_days: number;
+    end_of_order_taking_hour: number;
+    saturday: boolean; sunday: boolean; monday: boolean;
+    tuesday: boolean; wednesday: boolean; thursday: boolean; friday: boolean;
+  }): string[] => {
+    const now = new Date()
+    const currentHour = now.getHours()
+
+    // If the current hour is past the cut-off, preparation starts tomorrow
+    let prepStart = new Date(now)
+    if (currentHour >= rule.end_of_order_taking_hour) {
+      prepStart.setDate(prepStart.getDate() + 1)
     }
-    return times;
-  }, []);
+
+    // Earliest delivery is after preparation_days from prepStart
+    const earliest = new Date(prepStart)
+    earliest.setDate(earliest.getDate() + rule.preparation_days)
+
+    const weekdayAvailability: Record<string, boolean> = {
+      saturday: rule.saturday, sunday: rule.sunday, monday: rule.monday,
+      tuesday: rule.tuesday, wednesday: rule.wednesday, thursday: rule.thursday,
+      friday: rule.friday,
+    }
+
+    const dates: string[] = []
+    const candidate = new Date(earliest)
+    // Scan up to 21 days to find at most 7 valid delivery dates
+    for (let i = 0; i < 21 && dates.length < 7; i++) {
+      const dayField = JS_DAY_TO_FIELD[candidate.getDay()]
+      if (weekdayAvailability[dayField]) {
+        const today = new Date(now)
+        today.setHours(0, 0, 0, 0)
+        const candidateDay = new Date(candidate)
+        candidateDay.setHours(0, 0, 0, 0)
+        const diffDays = Math.round((candidateDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+        const dateStr = new Intl.DateTimeFormat('fa-IR', { month: 'long', day: 'numeric' }).format(candidate)
+        let prefix: string
+        if (diffDays === 0) prefix = 'امروز'
+        else if (diffDays === 1) prefix = 'فردا'
+        else prefix = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' }).format(candidate)
+        dates.push(`${prefix} (${dateStr})`)
+      }
+      candidate.setDate(candidate.getDate() + 1)
+    }
+    return dates
+  }
 
   useEffect(() => {
     if (user?.role === 'vendor') {
@@ -48,41 +103,61 @@ export default function CheckoutPage() {
       return
     }
 
-    api.get('/orders/cart/')
-      .then(res => {
-        const items = res.data.items || []
+    const fetchData = async () => {
+      try {
+        const cartRes = await api.get('/orders/cart/')
+        const items = cartRes.data.items || []
         const totalItemsPrice = items.reduce((acc: number, item: any) => acc + (item.product?.price * item.quantity), 0)
         setCartItemsTotal(totalItemsPrice)
-        setCartTotal(res.data.total_price)
+        setCartTotal(cartRes.data.total_price)
 
         // Extract unique brands
         const uniqueBrands: string[] = Array.from(new Set(items.map((item: any) => item.product?.brand || 'بدون برند')))
         setBrands(uniqueBrands)
 
-        // Initialize default times for each brand (first option)
+        // Fetch delivery rules for all vendors in the cart
+        const rulesRes = await api.get(`/orders/delivery-info/?brands=${encodeURIComponent(uniqueBrands.join(','))}`)
+        const rules = rulesRes.data || {}
+
+        // Default rule for vendors without a configured rule
+        const defaultRule = {
+          preparation_days: 2, end_of_order_taking_hour: 15,
+          saturday: true, sunday: true, monday: true,
+          tuesday: true, wednesday: true, thursday: true, friday: false,
+        }
+
+        // Compute valid delivery dates for each vendor
+        const vendorTimes: Record<string, string[]> = {}
         const initialTimes: Record<string, string> = {}
         uniqueBrands.forEach(brand => {
-          initialTimes[brand] = deliveryTimes[0]
+          const rule = rules[brand] || defaultRule
+          const dates = computeDeliveryDates(rule)
+          vendorTimes[brand] = dates
+          if (dates.length > 0) {
+            initialTimes[brand] = dates[0]
+          }
         })
+        setVendorDeliveryTimes(vendorTimes)
         setSelectedDeliveryTimes(initialTimes)
 
-        return api.get('/users/addresses/')
-      })
-      .then(res => {
-        if (res && res.data) {
-          setAddresses(res.data)
-          if (res.data.length > 0) {
-            const defaultAddr = res.data.find((a: any) => a.is_default) || res.data[0]
+        // Fetch addresses
+        const addrRes = await api.get('/users/addresses/')
+        if (addrRes?.data) {
+          setAddresses(addrRes.data)
+          if (addrRes.data.length > 0) {
+            const defaultAddr = addrRes.data.find((a: any) => a.is_default) || addrRes.data[0]
             setDefaultAddress(defaultAddr)
           }
         }
         setLoading(false)
-      })
-      .catch((err) => {
+      } catch (err) {
         toast.error("خطا در دریافت سبد خرید")
         router.push('/cart')
-      })
-  }, [deliveryTimes, router])
+      }
+    }
+
+    fetchData()
+  }, [router])
 
   const fetchAddresses = async () => {
     try {
@@ -246,7 +321,12 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-hide snap-x">
-                    {deliveryTimes.map((time, i) => {
+                    {(vendorDeliveryTimes[brand] || []).length === 0 ? (
+                    <div className="text-sm text-muted-foreground py-4 text-center w-full">
+                      زمان ارسالی برای این فروشنده در دسترس نیست.
+                    </div>
+                  ) : (
+                    (vendorDeliveryTimes[brand] || []).map((time, i) => {
                       const isActive = selectedDeliveryTimes[brand] === time
                       return (
                         <div
@@ -266,7 +346,8 @@ export default function CheckoutPage() {
                           </div>
                         </div>
                       )
-                    })}
+                    })
+                  )}
                   </div>
                 </div>
               ))}

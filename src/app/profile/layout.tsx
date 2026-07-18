@@ -47,10 +47,13 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
     { title: "پیام‌ها و اعلان‌ها", href: "/profile/notifications", icon: Bell },
   ]
 
-  const handleLogout = () => {
-    // Fire server request in background — don't await it
-    api.post('/users/logout/').catch(() => {})
-    // Immediately redirect
+  const handleLogout = async () => {
+    try {
+      await api.post('/users/logout/')
+    } catch {
+      // Continue with logout even if server request fails
+    }
+    // Full page reload to ensure cookies are cleared
     window.location.href = '/login'
   }
 

@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { useCategories } from "@/hooks/useCategories"
 import { Textarea } from "@/components/ui/textarea"
-import { mediaUrl } from "@/lib/utils"
 
 export default function VendorProductsPage() {
   const [products, setProducts] = useState([])
@@ -190,7 +189,7 @@ export default function VendorProductsPage() {
 
               {p.image_url ? (
                 <div className="w-full h-48 rounded-2xl overflow-hidden bg-secondary/10 relative">
-                  <img src={mediaUrl(p.image_url)} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   {p.discount_price && (
                     <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-sm">
                       تخفیف
