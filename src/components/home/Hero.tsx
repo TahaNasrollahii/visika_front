@@ -19,16 +19,16 @@ export function Hero() {
 
         {/* Floating Glassmorphic Widget 1 */}
         <div
-          className="absolute left-[8%] top-[15%] hidden lg:flex flex-col gap-3 bg-white/10 backdrop-blur-xl border border-white/20 p-4 rounded-3xl shadow-2xl w-64 rotate-[-4deg] z-20 animate-float"
+          className="absolute left-[-2%] top-[12%] lg:left-[8%] lg:top-[15%] flex flex-col gap-2 lg:gap-3 bg-white/10 backdrop-blur-xl border border-white/20 p-2 lg:p-4 rounded-2xl lg:rounded-3xl shadow-2xl w-48 lg:w-64 rotate-[-4deg] z-20 animate-float scale-75 lg:scale-100 origin-top-left"
         >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-tr from-yellow-400 to-orange-400 rounded-full flex items-center justify-center text-2xl shadow-lg border-2 border-white/30">🛵</div>
+          <div className="flex items-center gap-2 lg:gap-4">
+            <div className="w-8 h-8 lg:w-12 lg:h-12 bg-gradient-to-tr from-yellow-400 to-orange-400 rounded-full flex items-center justify-center text-lg lg:text-2xl shadow-lg border-2 border-white/30">🛵</div>
             <div>
-              <div className="text-white font-bold text-sm drop-shadow-sm">سفارش در حال ارسال</div>
-              <div className="text-white/80 text-xs mt-0.5">رسیدن تا ۱۵ دقیقه دیگر</div>
+              <div className="text-white font-bold text-xs lg:text-sm drop-shadow-sm">سفارش در حال ارسال</div>
+              <div className="text-white/80 text-[10px] lg:text-xs mt-0.5">رسیدن تا ۱۵ دقیقه دیگر</div>
             </div>
           </div>
-          <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden mt-1">
+          <div className="w-full bg-white/20 h-1 lg:h-1.5 rounded-full overflow-hidden mt-1">
             <div 
               className="h-full w-full bg-gradient-to-r from-yellow-300 to-yellow-500 rounded-full shadow-[0_0_10px_rgba(250,204,21,0.8)] origin-left animate-pulse"
             />
@@ -37,20 +37,25 @@ export function Hero() {
 
         {/* Floating Glassmorphic Widget 2 */}
         <div
-          className="absolute left-[28%] bottom-[20%] hidden lg:flex items-center gap-3 bg-white/10 backdrop-blur-xl border border-white/20 px-5 py-3.5 rounded-2xl shadow-2xl rotate-[3deg] z-20 animate-float [animation-delay:1s]"
+          className="absolute left-[2%] bottom-[25%] lg:left-[28%] lg:bottom-[20%] flex items-center gap-2 lg:gap-3 bg-white/10 backdrop-blur-xl border border-white/20 px-3 py-2 lg:px-5 lg:py-3.5 rounded-xl lg:rounded-2xl shadow-2xl rotate-[3deg] z-20 animate-float [animation-delay:1s] scale-75 lg:scale-100 origin-bottom-left"
         >
-          <div className="text-3xl drop-shadow-lg">🎉</div>
+          <div className="text-xl lg:text-3xl drop-shadow-lg">🎉</div>
           <div className="flex flex-col">
-            <span className="text-white font-black text-sm drop-shadow-md">تخفیف ویژه امروز</span>
-            <span className="text-yellow-300 font-bold text-xs mt-0.5">-۵۰٪ محصولات پروتئینی</span>
+            <span className="text-white font-black text-xs lg:text-sm drop-shadow-md">تخفیف ویژه امروز</span>
+            <span className="text-yellow-300 font-bold text-[10px] lg:text-xs mt-0.5">-۵۰٪ محصولات پروتئینی</span>
           </div>
         </div>
 
-        {/* Floating Emoji */}
+        {/* Floating Emojis */}
         <div
-          className="absolute top-1/3 left-[45%] text-5xl hidden lg:block opacity-60 blur-[1px] animate-float [animation-delay:2s]"
+          className="absolute top-1/4 lg:top-1/3 left-[65%] lg:left-[45%] text-3xl lg:text-5xl opacity-50 lg:opacity-60 blur-[1px] animate-float [animation-delay:2s]"
         >
           🥑
+        </div>
+        <div
+          className="absolute bottom-[20%] left-[85%] text-2xl lg:text-4xl opacity-40 blur-[1px] animate-float [animation-delay:3.5s] z-0"
+        >
+          🍅
         </div>
 
         {/* Main Content */}
