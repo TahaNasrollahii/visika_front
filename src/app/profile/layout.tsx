@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import { User, Package, Heart, MapPin, Bell, LogOut, ChevronLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
 import api from "@/lib/api"
+import { toast } from "sonner"
 
 import { mediaUrl } from "@/lib/utils"
 
@@ -73,8 +74,10 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
       const res = await api.patch('/users/info/', formData)
       setUser(res.data)
       window.dispatchEvent(new Event("user-updated"))
+      toast.success("عکس پروفایل با موفقیت بروزرسانی شد")
     } catch (err) {
       console.error("Avatar upload failed", err)
+      toast.error("خطا در بروزرسانی عکس پروفایل")
     } finally {
       setUploading(false)
     }
