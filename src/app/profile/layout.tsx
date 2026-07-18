@@ -51,11 +51,13 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   const handleLogout = async () => {
     try {
       await api.post('/users/logout/')
-    } catch {
-      // Continue with logout even if server request fails
+      window.location.href = '/login'
+    } catch (err: any) {
+      console.error("Logout failed", err)
+      const errorDetails = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+      console.log("BACKEND ERROR DETAILS:", errorDetails)
+      toast.error(`خطا در خروج: ${errorDetails}`)
     }
-    // Full page reload to ensure cookies are cleared
-    window.location.href = '/login'
   }
 
   const handleAvatarClick = () => {
