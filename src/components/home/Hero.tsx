@@ -17,22 +17,16 @@ export function Hero() {
           className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none animate-pulse duration-1000 delay-500"
         />
 
-        {/* Floating Glassmorphic Widget 1 */}
+        {/* Floating Emojis */}
         <div
-          className="absolute left-[5%] top-[15%] lg:left-[8%] lg:top-[15%] inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs md:text-sm font-medium shadow-2xl rotate-[-4deg] z-20 animate-float scale-90 lg:scale-100 origin-top-left"
+          className="absolute top-[20%] left-[10%] lg:top-[15%] lg:left-[15%] text-5xl lg:text-7xl drop-shadow-2xl animate-float [animation-delay:1s] z-20"
         >
-          ✨ تجربه نسل جدید خرید آنلاین
+          🧀
         </div>
-
-        {/* Floating Glassmorphic Widget 2 */}
         <div
-          className="absolute left-[2%] bottom-[32%] lg:left-[28%] lg:bottom-[20%] flex items-center gap-2 lg:gap-3 bg-white/10 backdrop-blur-xl border border-white/20 px-3 py-2 lg:px-5 lg:py-3.5 rounded-xl lg:rounded-2xl shadow-2xl rotate-[3deg] z-20 animate-float [animation-delay:1s] scale-75 lg:scale-100 origin-bottom-left"
+          className="absolute bottom-[30%] left-[5%] lg:bottom-[25%] lg:left-[20%] text-5xl lg:text-7xl drop-shadow-2xl animate-float [animation-delay:2.5s] z-20"
         >
-          <div className="text-xl lg:text-3xl drop-shadow-lg">🎉</div>
-          <div className="flex flex-col">
-            <span className="text-white font-black text-xs lg:text-sm drop-shadow-md">تخفیف ویژه امروز</span>
-            <span className="text-yellow-300 font-bold text-[10px] lg:text-xs mt-0.5">-۵۰٪ محصولات پروتئینی</span>
-          </div>
+          🥛
         </div>
 
 
@@ -41,7 +35,11 @@ export function Hero() {
         <div
           className="relative z-10 px-6 md:px-16 py-8 md:py-0 w-full h-full md:h-auto max-w-3xl text-white flex flex-col items-start text-right animate-in fade-in slide-in-from-bottom-8 duration-700"
         >
-          <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-7xl font-black leading-[1.25] md:leading-tight tracking-tight mt-auto md:mt-0 drop-shadow-sm">
+          <div className="inline-block mb-auto md:mb-6 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs md:text-sm font-medium">
+            ✨ تجربه نسل جدید خرید آنلاین
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-7xl font-black leading-[1.25] md:leading-tight tracking-tight mt-4 md:mt-0 drop-shadow-sm">
             خرید <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">تازه</span>، <br />
             تحویل سریع
           </h1>
