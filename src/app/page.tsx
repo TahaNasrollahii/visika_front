@@ -93,9 +93,9 @@ export default async function Home() {
             <ChevronLeft className="w-5 h-5" />
           </Link>
         </div>
-        <div className="flex overflow-x-auto pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:grid md:grid-cols-4 lg:grid-cols-6 gap-4 md:overflow-visible md:pb-0">
+        <div className={`flex overflow-x-auto pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] gap-4 ${bestSellers.length > 5 ? '' : 'md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible md:pb-0'}`}>
           {bestSellers.map((product: any) => (
-            <div key={product.id} className="w-[160px] shrink-0 snap-center md:w-auto">
+            <div key={product.id} className={`w-[160px] shrink-0 snap-center ${bestSellers.length > 5 ? 'md:w-[200px] lg:w-[240px]' : 'md:w-auto'}`}>
               <ProductCard product={product} />
             </div>
           ))}
