@@ -13,8 +13,8 @@ export function Footer() {
           {/* Brand & Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-6">
-              <div className="relative w-10 h-10 overflow-hidden">
-                <Image src="/logo.png" alt="ویزیکا" fill className="object-contain" sizes="40px" />
+              <div className="relative w-16 h-16 md:w-20 md:h-20 overflow-hidden">
+                <Image src="/logo.png" alt="ویزیکا" fill className="object-contain" sizes="80px" />
               </div>
               <span className="font-bold text-2xl tracking-tight text-primary">
                 ویزیکا

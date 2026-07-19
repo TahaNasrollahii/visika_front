@@ -144,8 +144,8 @@ export function Header() {
                 setShowLiveResults(false)
               }}
             >
-              <div className="relative w-10 h-10 md:w-[42px] md:h-[42px] flex items-center justify-center overflow-hidden">
-                <Image src="/logo.png" alt="ویزیکا" fill className="object-contain" priority sizes="(max-width: 768px) 40px, 42px" />
+              <div className="relative w-16 h-16 md:w-[64px] md:h-[64px] flex items-center justify-center overflow-hidden">
+                <Image src="/logo.png" alt="ویزیکا" fill className="object-contain" priority sizes="(max-width: 768px) 64px, 64px" />
               </div>
               <div className="flex flex-col">
                 <span className="font-extrabold text-xl md:text-[22px] tracking-tight text-foreground leading-tight">
