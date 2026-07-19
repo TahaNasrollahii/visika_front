@@ -136,7 +136,7 @@ export function HotOffers({ hotOffers }: { hotOffers: any[] }) {
           className={`flex-1 w-full overflow-x-auto flex gap-3 md:gap-4 pb-4 pt-2 lg:py-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} items-stretch relative z-10 px-2`}
         >
           {hotOffers.map((product) => (
-            <div key={product.id} className="w-[160px] md:w-[190px] shrink-0 group/card pointer-events-none">
+            <div key={product.id} className="w-[140px] md:w-[190px] shrink-0 group/card pointer-events-none">
               <div className="h-full transform group-hover/card:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-white/10 pointer-events-auto">
                 <div className="bg-white rounded-3xl p-1 shadow-xl h-full relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -149,7 +149,7 @@ export function HotOffers({ hotOffers }: { hotOffers: any[] }) {
           ))}
           
           {/* View All Card */}
-          <div className="w-[140px] md:w-[170px] shrink-0 flex items-stretch py-1 pointer-events-none">
+          <div className="w-[130px] md:w-[170px] shrink-0 flex items-stretch py-1 pointer-events-none">
             <Link href="/offers" className="pointer-events-auto flex flex-col items-center justify-center w-full h-full bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all duration-300 rounded-3xl border border-white/20 hover:border-white/40 text-white gap-4 group shadow-lg min-h-[220px]">
               <div className="w-16 h-16 rounded-full bg-white text-primary flex items-center justify-center group-hover:scale-110 group-hover:-translate-x-2 transition-all duration-300 shadow-xl">
                 <ChevronLeft className="w-8 h-8" />

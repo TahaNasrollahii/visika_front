@@ -56,12 +56,12 @@ export default async function Home() {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold tracking-tight">دسته‌بندی‌ها</h2>
         </div>
-        <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+        <div className="flex overflow-x-auto pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:grid md:grid-cols-6 lg:grid-cols-8 gap-4 md:overflow-visible md:pb-0">
           {categories.map((cat: any) => (
             <Link
               key={cat.id}
               href={`/categories/${cat.slug}`}
-              className="group flex flex-col items-center gap-3 text-center"
+              className="group flex flex-col items-center gap-3 text-center min-w-[72px] shrink-0 snap-center md:min-w-0"
             >
               <div className={`relative w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center text-3xl shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md ${cat.color} overflow-hidden`}>
                 {cat.image ? (
@@ -93,9 +93,11 @@ export default async function Home() {
             <ChevronLeft className="w-5 h-5" />
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="flex overflow-x-auto pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:grid md:grid-cols-4 lg:grid-cols-6 gap-4 md:overflow-visible md:pb-0">
           {bestSellers.map((product: any) => (
-            <ProductCard key={product.id} product={product} />
+            <div key={product.id} className="w-[140px] shrink-0 snap-center md:w-auto">
+              <ProductCard product={product} />
+            </div>
           ))}
         </div>
       </section>

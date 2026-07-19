@@ -19,7 +19,7 @@ export function Hero() {
 
         {/* Floating Glassmorphic Widget 1 */}
         <div
-          className="absolute left-[-2%] top-[12%] lg:left-[8%] lg:top-[15%] flex flex-col gap-2 lg:gap-3 bg-white/10 backdrop-blur-xl border border-white/20 p-2 lg:p-4 rounded-2xl lg:rounded-3xl shadow-2xl w-48 lg:w-64 rotate-[-4deg] z-20 animate-float scale-75 lg:scale-100 origin-top-left"
+          className="absolute left-[10%] top-[20%] lg:left-[8%] lg:top-[15%] flex flex-col gap-2 lg:gap-3 bg-white/10 backdrop-blur-xl border border-white/20 p-2 lg:p-4 rounded-2xl lg:rounded-3xl shadow-2xl w-48 lg:w-64 rotate-[-4deg] z-20 animate-float scale-75 lg:scale-100 origin-top-left"
         >
           <div className="flex items-center gap-2 lg:gap-4">
             <div className="w-8 h-8 lg:w-12 lg:h-12 bg-gradient-to-tr from-yellow-400 to-orange-400 rounded-full flex items-center justify-center text-lg lg:text-2xl shadow-lg border-2 border-white/30">🛵</div>
@@ -37,7 +37,7 @@ export function Hero() {
 
         {/* Floating Glassmorphic Widget 2 */}
         <div
-          className="absolute left-[2%] bottom-[25%] lg:left-[28%] lg:bottom-[20%] flex items-center gap-2 lg:gap-3 bg-white/10 backdrop-blur-xl border border-white/20 px-3 py-2 lg:px-5 lg:py-3.5 rounded-xl lg:rounded-2xl shadow-2xl rotate-[3deg] z-20 animate-float [animation-delay:1s] scale-75 lg:scale-100 origin-bottom-left"
+          className="absolute left-[15%] bottom-[32%] lg:left-[28%] lg:bottom-[20%] flex items-center gap-2 lg:gap-3 bg-white/10 backdrop-blur-xl border border-white/20 px-3 py-2 lg:px-5 lg:py-3.5 rounded-xl lg:rounded-2xl shadow-2xl rotate-[3deg] z-20 animate-float [animation-delay:1s] scale-75 lg:scale-100 origin-bottom-left"
         >
           <div className="text-xl lg:text-3xl drop-shadow-lg">🎉</div>
           <div className="flex flex-col">
@@ -46,17 +46,7 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Floating Emojis */}
-        <div
-          className="absolute top-1/4 lg:top-1/3 left-[65%] lg:left-[45%] text-3xl lg:text-5xl opacity-50 lg:opacity-60 blur-[1px] animate-float [animation-delay:2s]"
-        >
-          🥑
-        </div>
-        <div
-          className="absolute bottom-[20%] left-[85%] text-2xl lg:text-4xl opacity-40 blur-[1px] animate-float [animation-delay:3.5s] z-0"
-        >
-          🍅
-        </div>
+
 
         {/* Main Content */}
         <div
