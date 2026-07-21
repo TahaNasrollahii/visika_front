@@ -145,7 +145,8 @@ export function Header() {
               }}
             >
               <div className="relative w-20 h-20 md:w-[120px] md:h-[120px] flex items-center justify-center shrink-0">
-                <Image src="/logo.png" alt="ویزیکا" fill className="object-contain scale-[1.3] md:scale-[1.5]" priority unoptimized />
+                <Image src="/newlogo.png" alt="ویزیکا" fill className="hidden md:block object-contain scale-[1.3] md:scale-[1.5]" priority unoptimized />
+                <Image src="/mobile_logo.png" alt="ویزیکا" fill className="block md:hidden object-contain scale-[1.3] md:scale-[1.5]" priority unoptimized />
               </div>
             </Link>
 
