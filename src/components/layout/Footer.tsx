@@ -12,9 +12,9 @@ export function Footer() {
           
           {/* Brand & Info */}
           <div className="space-y-4">
-            <div className="flex items-center mb-2 -mt-4 md:-mt-8 -mr-6 md:-mr-10">
-              <div className="relative w-28 h-28 md:w-40 md:h-40 shrink-0">
-                <Image src="/newlogo.png" alt="ویزیکا" fill className="object-contain scale-[1.3] md:scale-[1.5]" unoptimized />
+            <div className="flex mb-4">
+              <div className="relative w-48 h-16 md:w-56 md:h-20 shrink-0">
+                <Image src="/newlogo.png" alt="ویزیکا" fill className="object-contain object-right" unoptimized />
               </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
