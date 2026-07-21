@@ -12,7 +12,7 @@ export function Footer() {
           
           {/* Brand & Info */}
           <div className="space-y-4">
-            <div className="flex mb-0 md:mb-4 -mt-2 md:-mt-0">
+            <div className="flex mb-0 md:mb-4 -mt-8 md:-mt-0">
               <div className="relative w-36 h-36 md:w-80 md:h-28 shrink-0">
                 <Image src="/newlogo.png" alt="ویزیکا" fill className="hidden md:block object-contain object-right" unoptimized />
                 <Image src="/mobile_logo.png" alt="ویزیکا" fill className="block md:hidden object-contain object-right" unoptimized />
