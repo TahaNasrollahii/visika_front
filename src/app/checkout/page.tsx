@@ -28,6 +28,7 @@ export default function CheckoutPage() {
   const [selectedDeliveryTimes, setSelectedDeliveryTimes] = useState<Record<string, string>>({})
   // Vendor-specific valid delivery dates computed from delivery rules
   const [vendorDeliveryTimes, setVendorDeliveryTimes] = useState<Record<string, string[]>>({})
+  const [activeVendorModal, setActiveVendorModal] = useState<string | null>(null)
 
   const router = useRouter()
 
@@ -315,40 +316,75 @@ export default function CheckoutPage() {
 
             <div className="space-y-8">
               {brands.map(brand => (
-                <div key={brand} className="bg-background rounded-2xl p-5 border border-border/40 shadow-sm">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Package className="w-5 h-5 text-primary" />
-                    <h3 className="font-bold text-lg">ارسال فروشنده: {brand}</h3>
+                <div key={brand} className="bg-background rounded-2xl p-4 md:p-5 border border-border/40 shadow-sm">
+                  {/* Desktop View */}
+                  <div className="hidden md:block">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Package className="w-5 h-5 text-primary" />
+                      <h3 className="font-bold text-lg">ارسال فروشنده: {brand}</h3>
+                    </div>
+
+                    <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-hide snap-x">
+                      {(vendorDeliveryTimes[brand] || []).length === 0 ? (
+                      <div className="text-sm text-muted-foreground py-4 text-center w-full">
+                        زمان ارسالی برای این فروشنده در دسترس نیست.
+                      </div>
+                    ) : (
+                      (vendorDeliveryTimes[brand] || []).map((time, i) => {
+                        const isActive = selectedDeliveryTimes[brand] === time
+                        const timeParts = time.split(' (')
+                        const day = timeParts[0]
+                        const date = timeParts[1] ? timeParts[1].replace(')', '') : ''
+
+                        return (
+                          <div
+                            key={i}
+                            onClick={() => handleTimeSelect(brand, time)}
+                            className="relative cursor-pointer snap-center shrink-0 w-[180px] hover:scale-105 active:scale-95 transition-transform"
+                          >
+                            {isActive && (
+                              <div
+                                className="absolute inset-0 bg-primary border-2 border-primary rounded-2xl shadow-[0_4px_15px_rgba(var(--primary),0.2)]"
+                              />
+                            )}
+                            <div className={`relative flex flex-col items-center justify-center gap-1 p-3 h-[80px] rounded-2xl border-2 transition-colors duration-300 ${isActive ? 'border-transparent text-primary-foreground' : 'border-border/60 bg-secondary/30 text-muted-foreground hover:border-primary/40 hover:bg-secondary/50'}`}>
+                              <span className={`font-bold text-[14px] text-center ${isActive ? 'text-primary-foreground' : 'text-foreground'}`}>
+                                {day}
+                              </span>
+                              {date && (
+                                <span className={`text-[12px] text-center ${isActive ? 'text-primary-foreground/90' : 'text-muted-foreground'}`}>
+                                  {date}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )
+                      })
+                    )}
+                    </div>
                   </div>
 
-                  <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-hide snap-x">
-                    {(vendorDeliveryTimes[brand] || []).length === 0 ? (
-                    <div className="text-sm text-muted-foreground py-4 text-center w-full">
-                      زمان ارسالی برای این فروشنده در دسترس نیست.
+                  {/* Mobile View */}
+                  <div className="md:hidden flex flex-col gap-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-bold text-base text-foreground">{brand}</h3>
                     </div>
-                  ) : (
-                    (vendorDeliveryTimes[brand] || []).map((time, i) => {
-                      const isActive = selectedDeliveryTimes[brand] === time
-                      return (
-                        <div
-                          key={i}
-                          onClick={() => handleTimeSelect(brand, time)}
-                          className="relative cursor-pointer snap-center shrink-0 w-[180px] hover:scale-105 active:scale-95 transition-transform"
-                        >
-                          {isActive && (
-                            <div
-                              className="absolute inset-0 bg-primary border-2 border-primary rounded-2xl shadow-[0_4px_15px_rgba(var(--primary),0.2)]"
-                            />
-                          )}
-                          <div className={`relative flex flex-col items-center justify-center p-3 h-[80px] rounded-2xl border-2 transition-colors duration-300 ${isActive ? 'border-transparent text-primary-foreground' : 'border-border/60 bg-secondary/30 text-muted-foreground hover:border-primary/40 hover:bg-secondary/50'}`}>
-                            <span className={`font-bold text-[13px] text-center ${isActive ? 'text-primary-foreground' : 'text-foreground'}`}>
-                              {time}
-                            </span>
-                          </div>
-                        </div>
-                      )
-                    })
-                  )}
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">زمان تحویل</span>
+                      <div className="flex items-center gap-3">
+                         <span className="text-sm font-medium text-foreground">
+                           {selectedDeliveryTimes[brand] ? selectedDeliveryTimes[brand].split(' (')[0] : "انتخاب نشده"}
+                         </span>
+                         <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="text-primary border-primary rounded-full px-5 text-xs h-9 font-bold"
+                            onClick={() => setActiveVendorModal(brand)}
+                         >
+                           انتخاب
+                         </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -526,6 +562,62 @@ export default function CheckoutPage() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Delivery Time Bottom Sheet Modal (Mobile) */}
+      {activeVendorModal && (
+        <>
+          <div 
+            className="fixed inset-0 z-[60] bg-background/80 backdrop-blur-sm md:hidden"
+            onClick={() => setActiveVendorModal(null)}
+          />
+          <div className="fixed bottom-0 left-0 right-0 z-[70] bg-card w-full rounded-t-[2rem] border-t shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full duration-300 md:hidden">
+            <div className="flex justify-center p-3 cursor-pointer" onClick={() => setActiveVendorModal(null)}>
+              <div className="w-12 h-1.5 bg-muted rounded-full"></div>
+            </div>
+            <div className="px-6 pb-8 pt-2">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-black">انتخاب بازه زمانی</h2>
+              </div>
+              <div className="flex overflow-x-auto gap-3 pb-4 scrollbar-hide snap-x w-full">
+                {(vendorDeliveryTimes[activeVendorModal] || []).length === 0 ? (
+                  <div className="text-sm text-muted-foreground py-4 text-center w-full">
+                    زمان ارسالی در دسترس نیست.
+                  </div>
+                ) : (
+                  (vendorDeliveryTimes[activeVendorModal] || []).map((time, i) => {
+                    const isActive = selectedDeliveryTimes[activeVendorModal] === time
+                    const timeParts = time.split(' (')
+                    const day = timeParts[0]
+                    const date = timeParts[1] ? timeParts[1].replace(')', '') : ''
+
+                    return (
+                      <div
+                        key={i}
+                        onClick={() => {
+                           handleTimeSelect(activeVendorModal, time);
+                           setActiveVendorModal(null);
+                        }}
+                        className="relative cursor-pointer snap-center shrink-0 w-[110px]"
+                      >
+                        <div className={`relative flex flex-col items-center justify-center gap-1 p-3 h-[70px] rounded-3xl border transition-all ${isActive ? 'border-primary bg-primary/5 text-primary shadow-sm' : 'border-border/60 bg-background text-muted-foreground'}`}>
+                           <span className={`font-bold text-[13px] text-center leading-relaxed ${isActive ? 'text-primary' : 'text-foreground'}`}>
+                              {day}
+                           </span>
+                           {date && (
+                             <span className={`font-medium text-[11px] text-center ${isActive ? 'text-primary/80' : 'text-muted-foreground'}`}>
+                               {date}
+                             </span>
+                           )}
+                        </div>
+                      </div>
+                    )
+                  })
+                )}
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   )
